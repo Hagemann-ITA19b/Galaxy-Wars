@@ -8,6 +8,6 @@ class Settings(object):
     path_ui = os.path.join(path_file, "UI")
     path_turrets = os.path.join(path_file, "Turrets")
     path_bullets = os.path.join(path_file, "Bullets")
-    player_size = (25, 25)
-    bullet_size = (25, 25)
+    path_starfighters = os.path.join(path_file, "Starfighters")
+    bullet_size = (2, 2)
     title = "Galaxy Wars"
