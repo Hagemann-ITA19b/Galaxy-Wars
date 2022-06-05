@@ -64,9 +64,11 @@ class Turret(pygame.sprite.Sprite):
             for target in target_group:
                 if projectile.rect.colliderect(target.rect):
                     projectile.kill()
-                    #target.kill()
+                    if target.shields <= 0:
+                        target.hull = target.hull - 10
+                    else:
+                        target.shields = target.shields - 10
                     break
-
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)

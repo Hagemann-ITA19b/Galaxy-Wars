@@ -20,9 +20,40 @@ class Ship(pygame.sprite.Sprite):
         self.team = team
         self.range = 500
         self.target_list = []
+        self.aiming = False
+        self.hull = 1000
+        self.shields = 1000
+        self.destroyed = False
 
     def range_check(self, screen):
         self.range_circle = pygame.draw.circle(screen, (255, 0, 0), self.rect.center, self.range)
+
+    def update_target(self, target, group):
+        self.shoot(target.rect.center, group)
+        print(self.target.rect.center)
+
+    def get_range(self, target, group):
+        if self.aiming == False:
+            if self.range_circle.collidepoint(target.rect.center):
+                self.aiming = True
+                self.target = target
+                self.target_group = group
+            else:
+                self.aiming = False
+                self.target = None
+                self.target_group = None
+
+        if self.aiming == True:
+            if not self.range_circle.collidepoint(self.target.rect.center) or self.target.destroyed:
+                print("Not in range")
+                
+                self.target = None
+                self.target_group = None
+                self.aiming = False
+
+        if self.aiming == True:
+            self.update_target(self.target, self.target_group)
+                
 
     def mark(self, screen):
         if self.selected:
@@ -34,7 +65,6 @@ class Ship(pygame.sprite.Sprite):
             turret.update(self.slots[turret.slot])
 
     def update(self):
-        
         if self.selected:
             self.create_waypoint()
             
@@ -48,6 +78,8 @@ class Ship(pygame.sprite.Sprite):
             elif self.rect.centery > self.mouse[1]:
                 self.rect.centery -= self.speed
             self.get_slots()
+        
+        self.check_death()
 
     def create_waypoint(self):
         rightclick = pygame.mouse.get_pressed() == (0, 0, 1)
@@ -64,6 +96,11 @@ class Ship(pygame.sprite.Sprite):
     def shoot(self, target, target_group):
         for turret in self.turrets:
             turret.shoot(target, target_group)
+
+    def check_death(self):
+        if self.hull <= 0:
+            self.destroyed = True
+            self.kill()
 
 class Carrier(Ship):
     def __init__(self, filename, team):

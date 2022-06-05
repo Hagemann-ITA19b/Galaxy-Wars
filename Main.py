@@ -79,6 +79,7 @@ class Game(object):
     def shot_in_range(self):
         self.team1 = pygame.sprite.Group()
         self.team2 = pygame.sprite.Group()
+        self.targeted = pygame.sprite.Group()
         for carrier in self.carrier:
             if carrier.team == 1:
                 self.team1.add(carrier)
@@ -93,8 +94,10 @@ class Game(object):
         for team1 in self.team1:
             for team2 in self.team2:
                 team1.range_check(self.screen)
-                if team1.range_circle.collidepoint(team2.rect.center):
-                    team1.shoot(team2.rect.center, self.team2)
+                team2.range_check(self.screen)
+                team1.get_range(team2,self.team2)
+              
+  
 
 
     def update(self):
@@ -104,6 +107,7 @@ class Game(object):
         self.select()
         for carrier in self.carrier:
             carrier.get_slots()
+            
 
     def draw(self):
         self.background.draw(self.screen)
