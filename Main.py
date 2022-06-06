@@ -3,6 +3,7 @@ import os
 from random import randint
 from Settings import Settings
 from Ships import Carrier, Assault# Carrier # , Battleship, Cruiser, Submarine, Destroyer
+from Starfighters import Starfighter
 
 class Background(pygame.sprite.Sprite):
     def __init__(self, filename) -> None:
@@ -78,7 +79,6 @@ class Game(object):
     def shot_in_range(self):
         self.team1 = pygame.sprite.Group()
         self.team2 = pygame.sprite.Group()
-        self.teams = pygame.sprite.Group()
         for ship in self.ships:
             if ship.team == 1:
                 self.team1.add(ship)
@@ -92,24 +92,23 @@ class Game(object):
                 team1.get_range(team2,self.team2)
                 team2.get_range(team1,self.team1)
         
-        for ships in self.team1:
-            self.teams.add(ships)
-        for ships in self.team2:
-            self.teams.add(ships)
-  
-
-
     def update(self):
         self.shot_in_range()
         self.cursor.update()
-        for ships in self.teams:
-            ships.update()
+        for ship in self.ships:
+            ship.update()
+            if ship.stored_fighters > 0:
+                self.ships.add(Starfighter("starfighter.png", ship.team))
+                ship.stored_fighters -= 1
+                
+            
+
             
 
     def draw(self):
         self.background.draw(self.screen)
         self.cursor.draw(self.screen)
-        for ships in self.teams:
+        for ships in self.ships:
             ships.draw(self.screen)
 
         pygame.display.flip()

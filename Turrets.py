@@ -60,7 +60,6 @@ class Turret(pygame.sprite.Sprite):
         if pygame.time.get_ticks() > self.clock_time:
             self.clock_time = pygame.time.get_ticks() + self.rate
             for i in range(self.gunbarrel):
-                print(self.x)
                 self.projectile.add(Projectile(self.image, target[0], target[1],self.x + i*10 ,self.y + i*10))
         for projectile in self.projectile:
             for target in target_group:
@@ -82,8 +81,8 @@ class Dualies(Turret):
     def __init__(self,x,y):
         super().__init__(x,y)
         self.gunbarrel = 2
-        self.damage_shield = 0#20
-        self.damage_hull = 0#5
+        self.damage_shield = 20
+        self.damage_hull = 5
         self.range = 500
         self.rate = 50
         self.image = "bullet.png"

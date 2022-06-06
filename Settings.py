@@ -12,4 +12,5 @@ class Settings(object):
     path_starfighters = os.path.join(path_file, "Starfighters")
     turret_size = (10,10)
     bullet_size = (10, 10)
+    starfighter_size = (30, 30)
     title = "Galaxy Wars"

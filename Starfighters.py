@@ -3,34 +3,39 @@ import os
 from Settings import Settings
 from Turrets import *
 from random import randint
-
-class Ship(pygame.sprite.Sprite):
+from Ships import *
+from math import cos, sin
+class Starfighter(pygame.sprite.Sprite):
     def __init__(self, filename, team):
         super().__init__()
-        self.size = (300,300)
-        self.original_image = pygame.image.load(os.path.join(Settings.path_ships, filename)).convert_alpha()
+        self.size = (20,20)
+        self.original_image = pygame.image.load(os.path.join(Settings.path_starfighters, filename)).convert_alpha()
         self.original_image = pygame.transform.scale(self.original_image, self.size)
-        self.image = pygame.image.load(os.path.join(Settings.path_ships, filename)).convert_alpha()
+        self.image = pygame.image.load(os.path.join(Settings.path_starfighters, filename)).convert_alpha()
         self.image = pygame.transform.scale(self.image, self.size)
         self.rect = self.image.get_rect()
         self.mouse = pygame.mouse.get_pos()
+        self.mouse = (self.mouse[0] - randint(-100, 100), self.mouse[1] - randint(-100, 100))
         self.rect.center = self.mouse
         self.move = False
         self.rotated = False
         self.selected = False
-        self.speed = 0
-        self.rotation_speed = 1
+        self.speed = 10
+        self.rotation_speed = 5
         self.turrets = pygame.sprite.Group()
         self.team = team
         self.range = 500
         self.aiming = False
-        self.hull = 1000
-        self.shields = 1000
+        self.hull = 100
+        self.shields = 50
         self.regeneration_rate = 1
         self.destroyed = False
         self.current_angle = 0
         self.slots = 2
         self.stored_fighters = 0
+        self.angle = 0
+        self.idle = False
+        self.prev_center = 0
   
         
 
@@ -87,12 +92,19 @@ class Ship(pygame.sprite.Sprite):
 
 
     def update(self):
+        if self.idle == False:
+            self.prev_center = self.rect.center
+
         if self.selected:
             self.mouse_actions()
             
         for turret in self.turrets:
             turret.update(self.rect.center)
-      
+
+        if self.stored_fighters > 0:
+            self.spawn_fighter()
+            self.stored_fighters -= 1        
+
         if self.rotated:
             self.rotate(self.mouse[0], self.mouse[1])
 
@@ -106,9 +118,15 @@ class Ship(pygame.sprite.Sprite):
             if self.rect.centery > self.mouse[1]:
                 self.rect.centery -= self.speed
 
-            if self.waypoint.collidepoint(self.rect.center):
+            collision_rect = (self.rect.center[0] + self.rotation_speed, self.rect.center[1] + self.rotation_speed)
+            if self.waypoint.collidepoint(collision_rect):
                 self.move = False
                 self.rotated = False
+
+        elif self.move == False and self.rotated == False:
+            self.idle = True
+            self.move_sprite_in_circle()
+            
 
             
         
@@ -154,23 +172,22 @@ class Ship(pygame.sprite.Sprite):
             self.move = True
             self.rotated = False
 
-  
 
-class Carrier(Ship):
-    def __init__(self, filename, team):
-        super().__init__(filename, team)
-        self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
-        self.speed = 2
-        self.stored_fighters = 3
+    def move_sprite_in_circle(self):
+        if self.idle:
 
-class Assault(Ship):
-    def __init__(self, filename, team):
-        super().__init__(filename, team)
-        self.speed = 2
-        self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
-        self.turrets.add(Breacher(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
-        self.range = 500
+            rel_x, rel_y = self.mouse[0] - self.rect.centerx, self.mouse[1] - self.rect.centery
+            angle = (180 / math.pi) * -math.atan2(rel_y, rel_x)
+            if self.current_angle < angle:
+                self.current_angle = self.current_angle + self.rotation_speed
+            elif self.current_angle > angle:
+                self.current_angle = self.current_angle - self.rotation_speed
 
-    def speed_up(self):
-        self.speed += 1
+            self.image = pygame.transform.rotate(self.original_image, int(self.current_angle))
+            self.rect = self.image.get_rect(center=self.rect.center)
 
+            center = self.mouse
+            self.rect.center = [center[0] + 100 * cos(self.angle), center[1] + 100 * sin(self.angle)]
+            self.angle += 0.01
+      
+          
