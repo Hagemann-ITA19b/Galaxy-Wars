@@ -19,7 +19,6 @@ class Ship(pygame.sprite.Sprite):
         self.selected = False
         self.speed = 0
         self.turrets = pygame.sprite.Group()
-        self.slot0 = (0,0)
         self.team = team
         self.range = 500
         self.aiming = False
@@ -28,8 +27,7 @@ class Ship(pygame.sprite.Sprite):
         self.regeneration_rate = 1
         self.destroyed = False
         self.current_angle = 0
-        self.clock_time = pygame.time.get_ticks()
-        self.shoot_delay = 100
+        self.slots = 2
 
         
 
@@ -37,8 +35,6 @@ class Ship(pygame.sprite.Sprite):
         self.range_circle = pygame.draw.circle(screen, (255, 0, 0), self.rect.center, self.range)
 
     def update_target(self, target, group):
-        if pygame.time.get_ticks() > self.clock_time:
-            self.clock_time = pygame.time.get_ticks() + self.shoot_delay
             self.shoot(target.rect.center, group)
 
     def regenerate(self):
@@ -77,22 +73,27 @@ class Ship(pygame.sprite.Sprite):
     def draw(self, screen):
         if self.selected:
             self.create_waypoint(screen)
-        screen.blit(self.image, self.rect)
+        
         self.mark(screen)
         self.draw_turrets(screen)
+        screen.blit(self.image, self.rect)
         
 
     def draw_turrets(self, screen):
         for turret in self.turrets:
             turret.draw(screen)
             
+    def slots(self):
+        for i in range(self.slots):
+            self.slot_[i] = (randint(self.rect.left, self.rect.right), randint(self.rect.top, self.rect.bottom))
+        for i in range(0, len(self.turrets)):
+            self.turrets[i].rect.center = (self.slot_[i])
 
     def update(self):
         if self.selected:
             self.mouse_actions()
         for turret in self.turrets:
-            self.get_slots()
-            turret.update(self.slots[turret.slot])
+            turret.update(self.slot_[turret])
 
         if self.rotated:
             self.rotate(self.mouse[0], self.mouse[1])
@@ -151,10 +152,6 @@ class Ship(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(self.original_image, int(self.current_angle))
         self.rect = self.image.get_rect(center=self.rect.center)
 
-        for turret in self.turrets:
-           turret.pivotrotate(self.current_angle, self.rect.center)
-
-    
         if self.current_angle < angle + 1 and self.current_angle > angle - 1:
             self.move = True
             self.rotated = False
@@ -164,37 +161,17 @@ class Carrier(Ship):
     def __init__(self, filename, team):
         super().__init__(filename, team)
         self.speed = 2
-        self.slot0 = (self.rect.centerx, self.rect.centery - 30)
-        self.slot1 = (self.rect.centerx, self.rect.centery - 10)
-        self.turrets.add(Dualies("dualies.png", self.slot0[0], self.slot0[1], 0))
-        self.turrets.add(Dualies("dualies.png", self.slot1[0], self.slot1[1],1))
 
 
-    def get_slots(self):
-        self.slot0 = (self.rect.centerx, self.rect.centery - 30)
-        self.slot1 = (self.rect.centerx, self.rect.centery - 10)
-        self.slots = [self.slot0, self.slot1]
 
 class Assault(Ship):
     def __init__(self, filename, team):
         super().__init__(filename, team)
         self.speed = 2
-        self.slot0 = (self.rect.centerx +10, self.rect.centery - 30)
-        self.slot1 = (self.rect.centerx - 10, self.rect.centery - 10)
-        self.slot2 = (self.rect.centerx + 10, self.rect.centery + 10)
-        self.slot3 = (self.rect.centerx + 10, self.rect.centery - 10)
-        self.turrets.add(Dualies("dualies.png", self.slot0[0], self.slot0[1], 0))
-        self.turrets.add(Dualies("dualies.png", self.slot1[0], self.slot1[1],1))
-        self.turrets.add(Dualies("dualies.png", self.slot2[0], self.slot2[1],2))
-        self.turrets.add(Dualies("dualies.png", self.slot3[0], self.slot3[1], 3))
-        self.range = 5000
-
-    def get_slots(self):
-        self.slot0 = (self.rect.centerx -10, self.rect.centery -10)
-        self.slot1 = (self.rect.centerx + 10, self.rect.centery - 10)
-        self.slot2 = (self.rect.centerx + 10, self.rect.centery - 20)
-        self.slot3 = (self.rect.centerx - 10, self.rect.centery - 20)
-        self.slots = [self.slot0, self.slot1, self.slot3, self.slot2]
+        self.slot_1 = randint(self.rect.left,self.rect.right)
+        self.turrets.add(Dualies(1, randint(self.rect.top, self.rect.bottom)))
+        self.turrets.add(Breacher(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
+        self.range = 500
 
     def speed_up(self):
         self.speed += 1

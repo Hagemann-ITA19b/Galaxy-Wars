@@ -11,5 +11,5 @@ class Settings(object):
     path_bullets = os.path.join(path_file, "Bullets")
     path_starfighters = os.path.join(path_file, "Starfighters")
     turret_size = (10,10)
-    bullet_size = (2, 2)
+    bullet_size = (10, 10)
     title = "Galaxy Wars"

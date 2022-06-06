@@ -1,4 +1,4 @@
-
+from re import X
 import pygame
 import os
 import math
@@ -23,16 +23,16 @@ class Projectile(pygame.sprite.Sprite):
         self.y = y
         self.travel_time = 0
 
-    def move(self):
+    def move(self, bullet_range):
         self.x = self.x + self.dx 
         self.y = self.y + self.dy 
         self.rect.x = int(self.x) 
         self.rect.y = int(self.y)
-        self.kill_after_time()
+        self.kill_after_time(bullet_range)
 
-    def kill_after_time(self):
+    def kill_after_time(self, bullet_range):
         self.travel_time = self.travel_time + 1
-        if self.travel_time > 20:
+        if self.travel_time > bullet_range*0.039:
             self.kill()
 
     def draw(self, screen):
@@ -40,64 +40,64 @@ class Projectile(pygame.sprite.Sprite):
 
 
 class Turret(pygame.sprite.Sprite):
-    def __init__(self, filename,x,y, slot):
+    def __init__(self,x,y):
         super().__init__()
-        self.original_image = pygame.image.load(os.path.join(Settings.path_turrets, filename)).convert_alpha()
-        self.original_image = pygame.transform.scale(self.original_image, (10,10))
-        self.image = pygame.image.load(os.path.join(Settings.path_turrets, filename)).convert_alpha()
-        self.image = pygame.transform.scale(self.image, (10, 10))
-        self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
         self.projectile = pygame.sprite.Group()
-        self.slot = slot
-        ##range of turret in circle
         self.range = 100
-        #self.range_circle = pygame.draw.circle(screen, (255, 0, 0), self.rect.center, self.range)
+        self.x = x
+        self.y = y
+        self.clock_time = pygame.time.get_ticks()
+        
 
-    def update(self, slot):
-        self.rect.center = slot
+    def update(self,xy):
+        self.x = xy[0]
+        self.y = xy[1]
         for projectile in self.projectile:
-            projectile.move()
+            projectile.move(self.range)
 
 
     def shoot(self, target, target_group):
-        self.rotate(target[0],target[1])
-        self.projectile.add(Projectile("bullet.png", target[0], target[1], self.rect.centerx, self.rect.centery))
+        if pygame.time.get_ticks() > self.clock_time:
+            self.clock_time = pygame.time.get_ticks() + self.rate
+            for i in range(self.gunbarrel):
+                print(self.x)
+                self.projectile.add(Projectile(self.image, target[0], target[1],self.x + i*10 ,self.y + i*10))
         for projectile in self.projectile:
             for target in target_group:
                 if projectile.rect.colliderect(target.rect):
+                    
                     projectile.kill()
                     if target.shields <= 0:
-                        target.hull = target.hull - self.damage
+                        target.hull = target.hull - self.damage_hull
                     else:
-                        target.shields = target.shields - self.damage
+                        target.shields = target.shields - self.damage_shield
                     break
 
     def draw(self, screen):
-        screen.blit(self.image, self.rect)
         for projectile in self.projectile:
             projectile.draw(screen)
 
-
-
-    def rotate(self, dx,dy):
-        rel_x, rel_y = dx - self.rect.centerx, dy - self.rect.centery
-        angle = (180 / math.pi) * -math.atan2(rel_y, rel_x) -90
-        self.image = pygame.transform.rotate(self.original_image, int(angle))
-        self.rect = self.image.get_rect(center=self.rect.center)
-
-    def pivotrotate(self, angle, pivot):
-        #self.rect = self.image.get_rect(center=pivot)
-        self.rect.center = pivot
-        self.image = pygame.transform.rotate(self.original_image, int(angle))
-        pass
         
 class Dualies(Turret):
-    def __init__(self, filename, x, y, slot):
-        super().__init__(filename, x, y, slot)
-        self.damage = 10
-        self.range = 100
-        self.rate = 1
+    def __init__(self,x,y):
+        super().__init__(x,y)
+        self.gunbarrel = 2
+        self.damage_shield = 0#20
+        self.damage_hull = 0#5
+        self.range = 500
+        self.rate = 50
+        self.image = "bullet.png"
+
+class Breacher(Turret):
+    def __init__(self,x,y):
+        super().__init__(x,y)
+        self.speed = 1
+        self.gunbarrel = 1
+        self.damage_shield = 0
+        self.damage_hull = 300
+        self.range = 5000
+        self.rate = 5000
+        self.image = "breacher.png"
 
 
 

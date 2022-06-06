@@ -112,8 +112,6 @@ class Game(object):
         for ships in self.teams:
             ships.draw(self.screen)
 
-
-
         pygame.display.flip()
 
 if __name__ == "__main__":
