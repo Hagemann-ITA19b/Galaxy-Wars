@@ -1,5 +1,6 @@
 import os
 
+
 class Settings(object):
     window_height = 1080
     window_width = 1920
@@ -9,5 +10,6 @@ class Settings(object):
     path_turrets = os.path.join(path_file, "Turrets")
     path_bullets = os.path.join(path_file, "Bullets")
     path_starfighters = os.path.join(path_file, "Starfighters")
+    turret_size = (10,10)
     bullet_size = (2, 2)
     title = "Galaxy Wars"

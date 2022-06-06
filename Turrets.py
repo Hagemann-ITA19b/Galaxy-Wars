@@ -1,9 +1,10 @@
-from posixpath import splitdrive
+
 import pygame
 import os
-from Settings import Settings
 import math
+from Settings import Settings
 from random import randint
+
 class Projectile(pygame.sprite.Sprite):
     def __init__(self, filename, dx, dy,x,y): #delta x and delta y
         super().__init__()
@@ -41,6 +42,8 @@ class Projectile(pygame.sprite.Sprite):
 class Turret(pygame.sprite.Sprite):
     def __init__(self, filename,x,y, slot):
         super().__init__()
+        self.original_image = pygame.image.load(os.path.join(Settings.path_turrets, filename)).convert_alpha()
+        self.original_image = pygame.transform.scale(self.original_image, (10,10))
         self.image = pygame.image.load(os.path.join(Settings.path_turrets, filename)).convert_alpha()
         self.image = pygame.transform.scale(self.image, (10, 10))
         self.rect = self.image.get_rect()
@@ -58,22 +61,36 @@ class Turret(pygame.sprite.Sprite):
 
 
     def shoot(self, target, target_group):
+        self.rotate(target[0],target[1])
         self.projectile.add(Projectile("bullet.png", target[0], target[1], self.rect.centerx, self.rect.centery))
-
         for projectile in self.projectile:
             for target in target_group:
                 if projectile.rect.colliderect(target.rect):
                     projectile.kill()
                     if target.shields <= 0:
-                        target.hull = target.hull - 10
+                        target.hull = target.hull - self.damage
                     else:
-                        target.shields = target.shields - 10
+                        target.shields = target.shields - self.damage
                     break
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
         for projectile in self.projectile:
             projectile.draw(screen)
+
+
+
+    def rotate(self, dx,dy):
+        rel_x, rel_y = dx - self.rect.centerx, dy - self.rect.centery
+        angle = (180 / math.pi) * -math.atan2(rel_y, rel_x) -90
+        self.image = pygame.transform.rotate(self.original_image, int(angle))
+        self.rect = self.image.get_rect(center=self.rect.center)
+
+    def pivotrotate(self, angle, pivot):
+        #self.rect = self.image.get_rect(center=pivot)
+        self.rect.center = pivot
+        self.image = pygame.transform.rotate(self.original_image, int(angle))
+        pass
         
 class Dualies(Turret):
     def __init__(self, filename, x, y, slot):

@@ -40,19 +40,18 @@ class Game(object):
         self.clock = pygame.time.Clock()
         self.screen.fill((0, 0, 0))
         self.background = Background("background.png")
-        self.carrier = pygame.sprite.Group()
-        self.assault = pygame.sprite.Group()
+        self.ships = pygame.sprite.Group()
         self.cursor = Cursor("cursor.png")
         self.running = True
 
 
     def select(self):
         if pygame.mouse.get_pressed() == (1, 0, 0):
-            for carrier in self.carrier:
-                if carrier.rect.collidepoint(pygame.mouse.get_pos()):
-                    carrier.selected = True
+            for ship in self.ships:
+                if ship.rect.collidepoint(pygame.mouse.get_pos()):
+                    ship.selected = True
                 else:
-                    carrier.selected = False
+                    ship.selected = False
 
     def run(self):
         while self.running:
@@ -65,12 +64,12 @@ class Game(object):
     def watch_for_events(self):
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
-                pass
+                self.select()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    self.carrier.add(Carrier("carrier.png", 1))
+                    self.ships.add(Carrier("carrier.png", 1))
                 if event.key == pygame.K_a:
-                    self.carrier.add(Carrier("assault.png",2))
+                    self.ships.add(Assault("assault.png",2))
                 if event.key == pygame.K_ESCAPE:    
                     self.running = False
             elif event.type == pygame.QUIT:
@@ -79,45 +78,40 @@ class Game(object):
     def shot_in_range(self):
         self.team1 = pygame.sprite.Group()
         self.team2 = pygame.sprite.Group()
-        self.targeted = pygame.sprite.Group()
-        for carrier in self.carrier:
-            if carrier.team == 1:
-                self.team1.add(carrier)
+        self.teams = pygame.sprite.Group()
+        for ship in self.ships:
+            if ship.team == 1:
+                self.team1.add(ship)
             else:
-                self.team2.add(carrier)
-        for assault in self.assault:
-            if assault.team == 1:
-                self.team1.add(assault)
-            else:
-                self.team2.add(assault)
+                self.team2.add(ship)
         
         for team1 in self.team1:
             for team2 in self.team2:
                 team1.range_check(self.screen)
                 team2.range_check(self.screen)
                 team1.get_range(team2,self.team2)
-              
+                team2.get_range(team1,self.team1)
+        
+        for ships in self.team1:
+            self.teams.add(ships)
+        for ships in self.team2:
+            self.teams.add(ships)
   
 
 
     def update(self):
         self.shot_in_range()
-        self.carrier.update()
         self.cursor.update()
-        self.select()
-        for carrier in self.carrier:
-            carrier.get_slots()
+        for ships in self.teams:
+            ships.update()
             
 
     def draw(self):
         self.background.draw(self.screen)
         self.cursor.draw(self.screen)
-        for carrier in self.carrier:
-            carrier.mark(self.screen)
-        self.carrier.draw(self.screen)
+        for ships in self.teams:
+            ships.draw(self.screen)
 
-        for carrier in self.carrier:
-            carrier.draw_turrets(self.screen)
 
 
         pygame.display.flip()
