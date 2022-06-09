@@ -64,8 +64,6 @@ class Game(object):
             for ship in self.ships:
                 if ship.rect.colliderect(self.recting):
                     ship.selected = True
-                else:
-                    ship.selected = False
             if self.selecting == False:
                 self.starting_point = pygame.mouse.get_pos()
                 self.selecting = True
