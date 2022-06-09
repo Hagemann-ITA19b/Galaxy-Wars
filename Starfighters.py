@@ -53,6 +53,7 @@ class Starfighter(pygame.sprite.Sprite):
                 self.aiming = True
                 self.target = target
                 self.target_group = group
+                
             else:
                 self.aiming = False
                 self.target = None
@@ -167,7 +168,6 @@ class Starfighter(pygame.sprite.Sprite):
 
     def move_sprite_in_circle(self):
         if self.idle:
-
             rel_x, rel_y = self.mouse[0] - self.rect.centerx, self.mouse[1] - self.rect.centery
             angle = (180 / math.pi) * -math.atan2(rel_y, rel_x)
             if self.current_angle < angle:

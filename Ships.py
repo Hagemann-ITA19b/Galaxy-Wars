@@ -46,7 +46,6 @@ class Ship(pygame.sprite.Sprite):
         pass
 
     def animate(self):
-            
             if pygame.time.get_ticks() > self.clock_time:
                 self.clock_time = pygame.time.get_ticks() + self.animation_time
                 self.image = pygame.transform.rotate(self.original_image, int(self.current_angle))
@@ -211,6 +210,11 @@ class Assault(Ship):
         self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
         self.turrets.add(Breacher(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
         self.range = 500
+        for i in range(4):
+            bitmap = pygame.image.load(os.path.join(
+                Settings.path_ships, f"assault{i}.png"))
+            scaled = pygame.transform.scale(bitmap,self.size)
+            self.images.append(scaled)
 
     def speed_up(self):
         self.speed += 1

@@ -70,7 +70,7 @@ class Game(object):
                 if event.key == pygame.K_SPACE:
                     self.ships.add(Carrier("carrier0.png", 1))
                 if event.key == pygame.K_a:
-                    self.ships.add(Assault("assault.png",2))
+                    self.ships.add(Assault("assault0.png",2))
                 if event.key == pygame.K_ESCAPE:    
                     self.running = False
             elif event.type == pygame.QUIT:

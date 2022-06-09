@@ -64,7 +64,6 @@ class Turret(pygame.sprite.Sprite):
         for projectile in self.projectile:
             for target in target_group:
                 if projectile.rect.colliderect(target.rect):
-                    
                     projectile.kill()
                     if target.shields <= 0:
                         target.hull = target.hull - self.damage_hull
