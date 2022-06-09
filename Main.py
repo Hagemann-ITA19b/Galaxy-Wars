@@ -44,6 +44,11 @@ class Game(object):
         self.ships = pygame.sprite.Group()
         self.cursor = Cursor("cursor.png")
         self.running = True
+        self.selecting = False
+        self.starting_point = (0, 0)
+        self.dragpoint = (0, 0)
+        self.recting = pygame.Rect(self.starting_point[0], self.starting_point[1], 0, 0)
+
 
 
     def select(self):
@@ -53,6 +58,22 @@ class Game(object):
                     ship.selected = True
                 else:
                     ship.selected = False
+
+    def select_rect(self):
+        if pygame.mouse.get_pressed() == (1, 0, 0):
+            for ship in self.ships:
+                if ship.rect.colliderect(self.recting):
+                    ship.selected = True
+                else:
+                    ship.selected = False
+            if self.selecting == False:
+                self.starting_point = pygame.mouse.get_pos()
+                self.selecting = True
+            self.recting = pygame.draw.rect(self.screen, (255,225,100), pygame.Rect(self.starting_point[0], self.starting_point[1], 0 - (self.starting_point[0] - self.dragpoint[0]), 0 - (self.starting_point[1] - self.dragpoint[1])))
+        else:
+            self.selecting = False
+            self.recting = pygame.Rect(0, 0, 0, 0)
+
 
     def run(self):
         while self.running:
@@ -66,6 +87,8 @@ class Game(object):
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.select()
+            if event.type == pygame.MOUSEMOTION:
+                self.dragpoint = pygame.mouse.get_pos()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     self.ships.add(Carrier("carrier0.png", 1))
@@ -110,7 +133,7 @@ class Game(object):
         self.cursor.draw(self.screen)
         for ships in self.ships:
             ships.draw(self.screen)
-
+        self.select_rect()
         pygame.display.flip()
 
 if __name__ == "__main__":

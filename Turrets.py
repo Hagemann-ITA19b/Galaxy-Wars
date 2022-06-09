@@ -1,4 +1,3 @@
-from re import X
 import pygame
 import os
 import math

@@ -154,6 +154,7 @@ class Ship(pygame.sprite.Sprite):
         rightclick = pygame.mouse.get_pressed() == (0, 0, 1)
         leftclick = pygame.mouse.get_pressed() == (0, 1, 0)
         if rightclick:
+            self.move = False
             self.rotated = True
             self.mouse = pygame.mouse.get_pos()
             
