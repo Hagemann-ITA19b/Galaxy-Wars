@@ -35,8 +35,6 @@ class Starfighter(pygame.sprite.Sprite):
         self.stored_fighters = 0
         self.angle = 0
         self.idle = False
-        self.prev_center = 0
-  
         
 
     def range_check(self, screen):
@@ -62,7 +60,6 @@ class Starfighter(pygame.sprite.Sprite):
 
         if self.aiming == True:
             if not self.range_circle.collidepoint(self.target.rect.center) or self.target.destroyed:
-                
                 self.target = None
                 self.target_group = None
                 self.aiming = False
@@ -92,9 +89,6 @@ class Starfighter(pygame.sprite.Sprite):
 
 
     def update(self):
-        if self.idle == False:
-            self.prev_center = self.rect.center
-
         if self.selected:
             self.mouse_actions()
             
@@ -128,8 +122,6 @@ class Starfighter(pygame.sprite.Sprite):
             self.move_sprite_in_circle()
             
 
-            
-        
         self.regenerate()
         self.check_death()
 

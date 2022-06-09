@@ -10,8 +10,9 @@ class Ship(pygame.sprite.Sprite):
         self.size = (300,300)
         self.original_image = pygame.image.load(os.path.join(Settings.path_ships, filename)).convert_alpha()
         self.original_image = pygame.transform.scale(self.original_image, self.size)
-        self.image = pygame.image.load(os.path.join(Settings.path_ships, filename)).convert_alpha()
-        self.image = pygame.transform.scale(self.image, self.size)
+        # self.image = pygame.image.load(os.path.join(Settings.path_ships, filename)).convert_alpha()
+        # self.image = pygame.transform.scale(self.image, self.size)
+        self.image = self.original_image
         self.rect = self.image.get_rect()
         self.mouse = pygame.mouse.get_pos()
         self.rect.center = self.mouse
@@ -31,8 +32,28 @@ class Ship(pygame.sprite.Sprite):
         self.current_angle = 0
         self.slots = 2
         self.stored_fighters = 0
-  
+
+        #for animation
+        self.images = []
+        self.imageindex = 0
         
+        self.clock_time = pygame.time.get_ticks()
+        self.animation_time = 50
+        self.images.append(self.original_image) 
+
+
+    def update_sprite(self):
+        pass
+
+    def animate(self):
+            
+            if pygame.time.get_ticks() > self.clock_time:
+                self.clock_time = pygame.time.get_ticks() + self.animation_time
+                self.image = pygame.transform.rotate(self.original_image, int(self.current_angle))
+                self.imageindex += 1
+                if self.imageindex >= len(self.images):
+                    self.imageindex = 0
+                self.original_image = self.images[self.imageindex]
 
     def range_check(self, screen):
         self.range_circle = pygame.draw.circle(screen, (255, 0, 0), self.rect.center, self.range)
@@ -56,37 +77,51 @@ class Ship(pygame.sprite.Sprite):
                 self.target_group = None
 
         if self.aiming == True:
+            self.update_target(self.target, self.target_group)
             if not self.range_circle.collidepoint(self.target.rect.center) or self.target.destroyed:
                 
                 self.target = None
                 self.target_group = None
                 self.aiming = False
 
-        if self.aiming == True:
-            self.update_target(self.target, self.target_group)
+        # if self.aiming == True:
+        #     # self.update_target(self.target, self.target_group)
                 
 
     def mark(self, screen):
+        pygame.draw.rect(screen, (255, 0, 0), self.rect, 2)
+
+    def draw_healthbar(self, screen):
         pygame.draw.rect(screen, (0, 0, 255), (self.rect.centerx - 50, self.rect.centery - 61, self.shields *0.1, 3))
         pygame.draw.rect(screen, (0, 255, 0), (self.rect.centerx - 50, self.rect.centery - 58, self.hull* 0.1, 3))
-        if self.selected:
-            pygame.draw.rect(screen, (255, 0, 0), self.rect, 2)
 
     def draw(self, screen):
         if self.selected:
             self.create_waypoint(screen)
-        
-        self.mark(screen)
+            self.mark(screen)
+
         self.draw_turrets(screen)
         screen.blit(self.image, self.rect)
+        self.draw_healthbar(screen)
         
 
     def draw_turrets(self, screen):
         for turret in self.turrets:
             turret.draw(screen)
 
+    def advance(self):
+        dx = self.mouse[0]- self.rect.centerx
+        dy = self.mouse[0]- self.rect.centery
+        distance = math.sqrt(dx*dy + dy*dy)
+        if distance > 15:
+            vx = dx * 5 / distance 
+            vy = dy * 5 / distance 
+            self.rect.centerx += vx
+            self.rect.centerx += vy
+
 
     def update(self):
+        self.animate()
         if self.selected:
             self.mouse_actions()
             
@@ -96,7 +131,7 @@ class Ship(pygame.sprite.Sprite):
         if self.rotated:
             self.rotate(self.mouse[0], self.mouse[1])
 
-        if self.move:
+        if self.move:            
             if self.rect.centerx < self.mouse[0]:
                 self.rect.centerx += self.speed
             if self.rect.centerx > self.mouse[0]:
@@ -105,6 +140,7 @@ class Ship(pygame.sprite.Sprite):
                 self.rect.centery += self.speed
             if self.rect.centery > self.mouse[1]:
                 self.rect.centery -= self.speed
+
 
             if self.waypoint.collidepoint(self.rect.center):
                 self.move = False
@@ -162,6 +198,11 @@ class Carrier(Ship):
         self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
         self.speed = 2
         self.stored_fighters = 3
+        for i in range(4):
+            bitmap = pygame.image.load(os.path.join(
+                Settings.path_ships, f"carrier{i}.png"))
+            scaled = pygame.transform.scale(bitmap,self.size)
+            self.images.append(scaled)
 
 class Assault(Ship):
     def __init__(self, filename, team):
