@@ -27,7 +27,8 @@ class Starfighter(pygame.sprite.Sprite):
         self.range = 500
         self.aiming = False
         self.hull = 100
-        self.shields = 50
+        self.shields = 100
+        self.max_shields = 100
         self.regeneration_rate = 1
         self.destroyed = False
         self.current_angle = 0
@@ -44,7 +45,7 @@ class Starfighter(pygame.sprite.Sprite):
             self.shoot(target.rect.center, group)
 
     def regenerate(self):
-        if self.shields < 1000:
+        if self.shields < self.max_shields:
             self.shields += self.regeneration_rate
 
     def get_range(self, target, group):

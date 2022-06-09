@@ -89,15 +89,15 @@ class Game(object):
                 self.dragpoint = pygame.mouse.get_pos()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    self.ships.add(Carrier("carrier0.png", 1))
+                    self.ships.add(Carrier("carrier.png",1))
                 if event.key == pygame.K_a:
-                    self.ships.add(Assault("assault0.png",2))
+                    self.ships.add(Assault("assault.png",2))
                 if event.key == pygame.K_ESCAPE:    
                     self.running = False
             elif event.type == pygame.QUIT:
                 self.running = False
 
-    def shot_in_range(self):
+    def shoot_in_range(self):
         self.team1 = pygame.sprite.Group()
         self.team2 = pygame.sprite.Group()
         for ship in self.ships:
@@ -114,7 +114,7 @@ class Game(object):
                 team2.get_range(team1,self.team1)
         
     def update(self):
-        self.shot_in_range()
+        self.shoot_in_range()
         self.cursor.update()
         for ship in self.ships:
             ship.update()

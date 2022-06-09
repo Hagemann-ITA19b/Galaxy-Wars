@@ -32,7 +32,6 @@ class Ship(pygame.sprite.Sprite):
         self.current_angle = 0
         self.slots = 2
         self.stored_fighters = 0
-
         #for animation
         self.images = []
         self.imageindex = 0
@@ -43,9 +42,15 @@ class Ship(pygame.sprite.Sprite):
 
 
     def update_sprite(self):
-        pass
+        if self.hull < 800:
+            for i in range(4):
+                bitmap = pygame.image.load(os.path.join(
+                    self.path, self.name+f"_damaged{i}.png"))
+                scaled = pygame.transform.scale(bitmap,self.size)
+                self.images.append(scaled)
 
     def animate(self):
+            self.update_sprite()
             if pygame.time.get_ticks() > self.clock_time:
                 self.clock_time = pygame.time.get_ticks() + self.animation_time
                 self.image = pygame.transform.rotate(self.original_image, int(self.current_angle))
@@ -78,13 +83,10 @@ class Ship(pygame.sprite.Sprite):
         if self.aiming == True:
             self.update_target(self.target, self.target_group)
             if not self.range_circle.collidepoint(self.target.rect.center) or self.target.destroyed:
-                
                 self.target = None
                 self.target_group = None
                 self.aiming = False
 
-        # if self.aiming == True:
-        #     # self.update_target(self.target, self.target_group)
                 
 
     def mark(self, screen):
@@ -198,9 +200,11 @@ class Carrier(Ship):
         self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
         self.speed = 2
         self.stored_fighters = 3
+        self.name = "carrier"
+        self.path = Settings.path_carrier
         for i in range(4):
             bitmap = pygame.image.load(os.path.join(
-                Settings.path_ships, f"carrier{i}.png"))
+                Settings.path_carrier, f"carrier{i}.png"))
             scaled = pygame.transform.scale(bitmap,self.size)
             self.images.append(scaled)
 
@@ -211,9 +215,11 @@ class Assault(Ship):
         self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
         self.turrets.add(Breacher(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
         self.range = 500
+        self.name = "assault"
+        self.path = Settings.path_assault
         for i in range(4):
             bitmap = pygame.image.load(os.path.join(
-                Settings.path_ships, f"assault{i}.png"))
+                Settings.path_assault, f"assault{i}.png"))
             scaled = pygame.transform.scale(bitmap,self.size)
             self.images.append(scaled)
 
