@@ -4,6 +4,7 @@ from random import randint
 from Settings import Settings
 from Ships import Carrier, Assault# Carrier # , Battleship, Cruiser, Submarine, Destroyer
 from Starfighters import Starfighter
+from Camera import *
 
 class Background(pygame.sprite.Sprite):
     def __init__(self, filename) -> None:
@@ -15,8 +16,9 @@ class Background(pygame.sprite.Sprite):
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 
-    def update(self):
-        pass
+    def update(self, offset):
+        self.rect.centerx = self.rect.centerx + offset[0]
+        self.rect.centery = self.rect.centery - offset[1]
 
 class Cursor(pygame.sprite.Sprite):
     def __init__(self, filename) -> None:
@@ -48,8 +50,11 @@ class Game(object):
         self.starting_point = (0, 0)
         self.dragpoint = (0, 0)
         self.recting = pygame.Rect(self.starting_point[0], self.starting_point[1], 0, 0)
-
-
+        
+        
+        #camera setup
+        pygame.event.set_grab(True)
+        self.offset = (0, 0)
 
     def select(self):
         if pygame.mouse.get_pressed() == (1, 0, 0):
@@ -71,6 +76,10 @@ class Game(object):
         else:
             self.selecting = False
             self.recting = pygame.Rect(0, 0, 0, 0)
+
+
+#setup
+        
 
 
     def run(self):
@@ -114,23 +123,29 @@ class Game(object):
                 team2.get_range(team1,self.team1)
         
     def update(self):
+        self.background.update(self.offset)
         self.shoot_in_range()
         self.cursor.update()
         for ship in self.ships:
-            ship.update()
+            ship.update(self.offset)
             if ship.stored_fighters > 0:
                 self.ships.add(Starfighter("starfighter.png", ship.team))
                 ship.stored_fighters -= 1
+ 
                 
             
 
             
 
     def draw(self):
+        mouse_control(self)
+        self.screen.fill((0, 0, 0))
         self.background.draw(self.screen)
         self.cursor.draw(self.screen)
         for ships in self.ships:
             ships.draw(self.screen)
+        
+
         self.select_rect()
         pygame.display.flip()
 

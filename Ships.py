@@ -13,7 +13,7 @@ class Ship(pygame.sprite.Sprite):
         # self.image = pygame.image.load(os.path.join(Settings.path_ships, filename)).convert_alpha()
         # self.image = pygame.transform.scale(self.image, self.size)
         self.image = self.original_image
-        self.rect = self.image.get_rect()
+        self.rect = self.image.get_rect() 
         self.mouse = pygame.mouse.get_pos()
         self.rect.center = self.mouse
         self.move = False
@@ -121,7 +121,9 @@ class Ship(pygame.sprite.Sprite):
             self.rect.centerx += vy
 
 
-    def update(self):
+    def update(self, offset):
+        self.rect.centerx = self.rect.centerx + offset[0]
+        self.rect.centery = self.rect.centery - offset[1]
         self.animate()
         if self.selected:
             self.mouse_actions()

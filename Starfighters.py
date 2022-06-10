@@ -90,7 +90,9 @@ class Starfighter(pygame.sprite.Sprite):
             turret.draw(screen)
 
 
-    def update(self):
+    def update(self, offset):
+        self.rect.centerx = self.rect.centerx + offset[0]
+        self.rect.centery = self.rect.centery - offset[1]
         if self.selected:
             self.mouse_actions()
             
@@ -121,7 +123,7 @@ class Starfighter(pygame.sprite.Sprite):
 
         elif self.move == False and self.rotated == False:
             self.idle = True
-            self.move_sprite_in_circle()
+            # self.move_sprite_in_circle()
             
 
         self.regenerate()
