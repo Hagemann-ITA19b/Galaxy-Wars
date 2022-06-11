@@ -5,8 +5,10 @@ from Settings import Settings
 from Ships import Carrier, Assault# Carrier # , Battleship, Cruiser, Submarine, Destroyer
 from Starfighters import Starfighter
 from Camera import *
+from GUI import *
+from Logic import *
 
-class Background(pygame.sprite.Sprite):
+class Background():
     def __init__(self, filename) -> None:
         super().__init__()
         self.image = pygame.image.load(os.path.join(Settings.path_ui, filename)).convert()
@@ -24,7 +26,7 @@ class Background(pygame.sprite.Sprite):
         self.rect.centerx = self.rect.centerx + offset[0]
         self.rect.centery = self.rect.centery - offset[1]
 
-class Cursor(pygame.sprite.Sprite):
+class Cursor():
     def __init__(self, filename) -> None:
         super().__init__()
         self.image = pygame.image.load(os.path.join(Settings.path_ui, filename)).convert_alpha()
@@ -47,6 +49,8 @@ class Game(object):
         self.clock = pygame.time.Clock()
         self.screen.fill((0, 0, 0))
         self.background = Background("background.png")
+        self.ui = GUI("ui.png")
+        self.match = Match(1)
         self.ships = pygame.sprite.Group()
         self.cursor = Cursor("cursor.png")
         self.running = True
@@ -105,9 +109,9 @@ class Game(object):
                             elif ship.selected == False:
                                 ship.selected = True
                 if event.key == pygame.K_SPACE:
-                    self.ships.add(Carrier("carrier.png",1))
+                    self.ships.add(Carrier("carrier.png",self.match.player1))
                 if event.key == pygame.K_p:
-                    self.ships.add(Assault("assault.png",2))
+                    self.ships.add(Assault("assault.png",self.match.player1))
                 if event.key == pygame.K_ESCAPE:    
                     self.running = False
             elif event.type == pygame.QUIT:
@@ -148,12 +152,14 @@ class Game(object):
         mouse_control(self)
         self.screen.fill((0, 0, 0))
         self.background.draw(self.screen)
-        self.cursor.draw(self.screen)
+        
         for ships in self.ships:
             ships.draw(self.screen)
         
 
         self.select_rect()
+        self.ui.draw(self.screen)
+        self.cursor.draw(self.screen)
         pygame.display.flip()
 
 if __name__ == "__main__":

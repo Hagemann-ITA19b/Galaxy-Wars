@@ -1,6 +1,6 @@
 import pygame
 def mouse_control(self):
-		camera_borders = {'left': 200, 'right': 200, 'top': 100, 'bottom': 100}
+		camera_borders = {'left': 10, 'right': 10, 'top': 10, 'bottom': 10}
 		mouse = pygame.math.Vector2(pygame.mouse.get_pos())
 		mouse_offset_vector = pygame.math.Vector2()
 
