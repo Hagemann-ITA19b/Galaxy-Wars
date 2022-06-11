@@ -111,7 +111,7 @@ class Game(object):
                 if event.key == pygame.K_SPACE:
                     self.ships.add(Carrier("carrier.png",self.match.player1))
                 if event.key == pygame.K_p:
-                    self.ships.add(Assault("assault.png",self.match.player1))
+                    self.ships.add(Assault("assault.png",2))
                 if event.key == pygame.K_ESCAPE:    
                     self.running = False
             elif event.type == pygame.QUIT:

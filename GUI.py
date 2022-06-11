@@ -17,13 +17,17 @@ class GUI():
 
     def update_pos(self):
         self.slider1_rect.centerx = self.buy_panel_rect.centerx - 200
-        self.slider1_rect.centery = self.buy_panel_rect.centery
 
 
     def interaction(self):
         self.mouse = pygame.mouse.get_pos()
-        if self.slider1_rect.collidepoint(self.mouse):
-            self.buy_panel_rect.centerx -= 11
+        self.click = pygame.mouse.get_pressed()
+        if self.click[0] == 1:
+            if self.slider1_rect.collidepoint(self.mouse):
+                if self.buy_panel_rect.centerx == 2100:
+                    self.buy_panel_rect.centerx = 1900
+                else:
+                    self.buy_panel_rect.centerx = 2100
         
 
 
