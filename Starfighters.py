@@ -36,7 +36,13 @@ class Starfighter(pygame.sprite.Sprite):
         self.stored_fighters = 0
         self.angle = 0
         self.idle = False
-        
+
+        self.waypoint_x = self.mouse[0] 
+        self.waypoint_y = self.mouse[1]
+        self.attack_target = False
+
+    def update_sprite(self):
+        pass
 
     def range_check(self, screen):
         self.range_circle = pygame.draw.circle(screen, (255, 0, 0), self.rect.center, self.range)
@@ -66,6 +72,7 @@ class Starfighter(pygame.sprite.Sprite):
                 self.target_group = None
                 self.aiming = False
 
+
         if self.aiming == True:
             self.update_target(self.target, self.target_group)
                 
@@ -77,8 +84,9 @@ class Starfighter(pygame.sprite.Sprite):
             pygame.draw.rect(screen, (255, 0, 0), self.rect, 2)
 
     def draw(self, screen):
-        if self.selected:
+        if self.selected or self.attack_target:
             self.create_waypoint(screen)
+
         
         self.mark(screen)
         self.draw_turrets(screen)
@@ -93,37 +101,37 @@ class Starfighter(pygame.sprite.Sprite):
     def update(self, offset):
         self.rect.centerx = self.rect.centerx + offset[0]
         self.rect.centery = self.rect.centery - offset[1]
+        self.waypoint_x = self.waypoint_x + offset[0]
+        self.waypoint_y = self.waypoint_y - offset[1]
         if self.selected:
             self.mouse_actions()
             
         for turret in self.turrets:
-            turret.update(self.rect.center)
-
-        if self.stored_fighters > 0:
-            self.spawn_fighter()
-            self.stored_fighters -= 1        
+            turret.update(self.rect.center)     
 
         if self.rotated:
-            self.rotate(self.mouse[0], self.mouse[1])
+            self.rotate(self.waypoint_x, self.waypoint_y)
 
         if self.move:
-            if self.rect.centerx < self.mouse[0]:
+            if self.rect.centerx < self.waypoint_x:
                 self.rect.centerx += self.speed
-            if self.rect.centerx > self.mouse[0]:
+            if self.rect.centerx > self.waypoint_x:
                 self.rect.centerx -= self.speed
-            if self.rect.centery < self.mouse[1]:
+            if self.rect.centery < self.waypoint_y:
                 self.rect.centery += self.speed
-            if self.rect.centery > self.mouse[1]:
+            if self.rect.centery > self.waypoint_y:
                 self.rect.centery -= self.speed
 
             collision_rect = (self.rect.center[0] + self.rotation_speed, self.rect.center[1] + self.rotation_speed)
+ 
+            
             if self.waypoint.collidepoint(collision_rect):
-                self.move = False
-                self.rotated = False
+                    self.move = False
+                    self.rotated = False
 
         elif self.move == False and self.rotated == False:
             self.idle = True
-            # self.move_sprite_in_circle()
+            self.move_sprite_in_circle(offset)
             
 
         self.regenerate()
@@ -134,7 +142,8 @@ class Starfighter(pygame.sprite.Sprite):
         leftclick = pygame.mouse.get_pressed() == (0, 1, 0)
         if rightclick:
             self.rotated = True
-            self.mouse = pygame.mouse.get_pos()
+            self.waypoint_x = pygame.mouse.get_pos()[0]
+            self.waypoint_y = pygame.mouse.get_pos()[1]
             
         if leftclick:
             self.mouse = pygame.mouse.get_pos()
@@ -142,7 +151,7 @@ class Starfighter(pygame.sprite.Sprite):
                 turret.shoot(self.mouse[0], self.mouse[1])
 
     def create_waypoint(self, screen):
-        self.waypoint = pygame.draw.circle(screen, (255, 255, 0), self.mouse, 5)
+        self.waypoint = pygame.draw.circle(screen, (255, 255, 0), (self.waypoint_x,self.waypoint_y), 5)
         
     def shoot(self, target, target_group):
         for turret in self.turrets:
@@ -169,9 +178,9 @@ class Starfighter(pygame.sprite.Sprite):
             self.rotated = False
 
 
-    def move_sprite_in_circle(self):
+    def move_sprite_in_circle(self, offset):
         if self.idle:
-            rel_x, rel_y = self.mouse[0] - self.rect.centerx, self.mouse[1] - self.rect.centery
+            rel_x, rel_y = self.waypoint_x - self.rect.centerx, self.waypoint_y - self.rect.centery
             angle = (180 / math.pi) * -math.atan2(rel_y, rel_x)
             if self.current_angle < angle:
                 self.current_angle = self.current_angle + self.rotation_speed
@@ -181,8 +190,8 @@ class Starfighter(pygame.sprite.Sprite):
             self.image = pygame.transform.rotate(self.original_image, int(self.current_angle))
             self.rect = self.image.get_rect(center=self.rect.center)
 
-            center = self.mouse
-            self.rect.center = [center[0] + 100 * cos(self.angle), center[1] + 100 * sin(self.angle)]
+            center = (self.waypoint_x, self.waypoint_y)
+            self.rect.center = [(center[0] + 100 * cos(self.angle)) + offset[0], (center[1] + 100 * sin(self.angle)) - offset[1]]
             self.angle += 0.01
       
           

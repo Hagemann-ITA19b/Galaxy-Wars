@@ -7,7 +7,7 @@ from random import randint
 class Ship(pygame.sprite.Sprite):
     def __init__(self, filename, team):
         super().__init__()
-        self.size = (300,300)
+        self.size = (150,150)
         self.original_image = pygame.image.load(os.path.join(Settings.path_ships, filename)).convert_alpha()
         self.original_image = pygame.transform.scale(self.original_image, self.size)
         # self.image = pygame.image.load(os.path.join(Settings.path_ships, filename)).convert_alpha()
@@ -40,17 +40,25 @@ class Ship(pygame.sprite.Sprite):
         self.animation_time = 50
         self.images.append(self.original_image) 
 
+        self.waypoint_x = self.mouse[0] 
+        self.waypoint_y = self.mouse[1]
+
+        #check sprites
+        self.appended_damaged = False
+
 
     def update_sprite(self):
-        if self.hull < 800:
-            for i in range(4):
-                bitmap = pygame.image.load(os.path.join(
-                    self.path, self.name+f"_damaged{i}.png"))
-                scaled = pygame.transform.scale(bitmap,self.size)
-                self.images.append(scaled)
+        if self.appended_damaged == False:
+            if self.hull < 800:
+                self.appended_damaged = True
+                self.images.clear()
+                for i in range(4):
+                    bitmap = pygame.image.load(os.path.join(
+                        self.path, self.name+f"_damaged{i}.png"))
+                    scaled = pygame.transform.scale(bitmap,self.size)
+                    self.images.append(scaled)
 
     def animate(self):
-            self.update_sprite()
             if pygame.time.get_ticks() > self.clock_time:
                 self.clock_time = pygame.time.get_ticks() + self.animation_time
                 self.image = pygame.transform.rotate(self.original_image, int(self.current_angle))
@@ -124,6 +132,8 @@ class Ship(pygame.sprite.Sprite):
     def update(self, offset):
         self.rect.centerx = self.rect.centerx + offset[0]
         self.rect.centery = self.rect.centery - offset[1]
+        self.waypoint_x = self.waypoint_x + offset[0]
+        self.waypoint_y = self.waypoint_y - offset[1]
         self.animate()
         if self.selected:
             self.mouse_actions()
@@ -132,20 +142,20 @@ class Ship(pygame.sprite.Sprite):
             turret.update(self.rect.center)
       
         if self.rotated:
-            self.rotate(self.mouse[0], self.mouse[1])
+            self.rotate(self.waypoint_x, self.waypoint_y)
 
         if self.move:            
-            if self.rect.centerx < self.mouse[0]:
+            if self.rect.centerx < self.waypoint_x:
                 self.rect.centerx += self.speed
-            if self.rect.centerx > self.mouse[0]:
+            if self.rect.centerx > self.waypoint_x:
                 self.rect.centerx -= self.speed
-            if self.rect.centery < self.mouse[1]:
+            if self.rect.centery < self.waypoint_y:
                 self.rect.centery += self.speed
-            if self.rect.centery > self.mouse[1]:
+            if self.rect.centery > self.waypoint_y:
                 self.rect.centery -= self.speed
 
 
-            if self.waypoint.collidepoint(self.rect.center):
+            if self.waypoint_circle.collidepoint(self.rect.center):
                 self.move = False
                 self.rotated = False
 
@@ -160,7 +170,8 @@ class Ship(pygame.sprite.Sprite):
         if rightclick:
             self.move = False
             self.rotated = True
-            self.mouse = pygame.mouse.get_pos()
+            self.waypoint_x = pygame.mouse.get_pos()[0]
+            self.waypoint_y = pygame.mouse.get_pos()[1]
             
         if leftclick:
             self.mouse = pygame.mouse.get_pos()
@@ -168,7 +179,7 @@ class Ship(pygame.sprite.Sprite):
                 turret.shoot(self.mouse[0], self.mouse[1])
 
     def create_waypoint(self, screen):
-        self.waypoint = pygame.draw.circle(screen, (255, 255, 0), self.mouse, 5)
+        self.waypoint_circle = pygame.draw.circle(screen, (255, 255, 0), (self.waypoint_x,self.waypoint_y), 5)
         
     def shoot(self, target, target_group):
         for turret in self.turrets:
@@ -194,7 +205,7 @@ class Ship(pygame.sprite.Sprite):
             self.move = True
             self.rotated = False
 
-  
+#ship types  
 
 class Carrier(Ship):
     def __init__(self, filename, team):

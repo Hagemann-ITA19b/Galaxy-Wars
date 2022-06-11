@@ -10,13 +10,17 @@ class Background(pygame.sprite.Sprite):
     def __init__(self, filename) -> None:
         super().__init__()
         self.image = pygame.image.load(os.path.join(Settings.path_ui, filename)).convert()
-        self.image = pygame.transform.scale(self.image, (Settings.window_width, Settings.window_height))
+        #self.image = pygame.transform.scale(self.image, (Settings.window_width, Settings.window_height))
         self.rect = self.image.get_rect()
+
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 
+
+
     def update(self, offset):
+    
         self.rect.centerx = self.rect.centerx + offset[0]
         self.rect.centery = self.rect.centery - offset[1]
 
@@ -78,9 +82,6 @@ class Game(object):
             self.recting = pygame.Rect(0, 0, 0, 0)
 
 
-#setup
-        
-
 
     def run(self):
         while self.running:
@@ -97,9 +98,15 @@ class Game(object):
             if event.type == pygame.MOUSEMOTION:
                 self.dragpoint = pygame.mouse.get_pos()
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LCTRL:
+                        for ship in self.ships:
+                            if ship.selected == True:
+                                ship.selected = False
+                            elif ship.selected == False:
+                                ship.selected = True
                 if event.key == pygame.K_SPACE:
                     self.ships.add(Carrier("carrier.png",1))
-                if event.key == pygame.K_a:
+                if event.key == pygame.K_p:
                     self.ships.add(Assault("assault.png",2))
                 if event.key == pygame.K_ESCAPE:    
                     self.running = False
