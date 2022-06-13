@@ -7,6 +7,7 @@ from Starfighters import Starfighter
 from Camera import *
 from GUI import *
 from Logic import *
+from Minimap import *
 
 class Background():
     def __init__(self, filename) -> None:
@@ -37,9 +38,7 @@ class Cursor():
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
-
-    def update(self):
-        self.rect.center = pygame.mouse.get_pos()
+        
 
 class Game(object):
     def __init__(self):
@@ -65,9 +64,17 @@ class Game(object):
         pygame.event.set_grab(True)
         self.offset = (0, 0)
 
-    def change_cursor(self):
+    def update_cursor(self):
         if self.ui.call_assault == True:
             self.cursor.image = pygame.image.load(os.path.join(Settings.path_assault, "assault0.png")).convert_alpha()
+        elif self.ui.call_carrier == True:
+            self.cursor.image = pygame.image.load(os.path.join(Settings.path_carrier, "carrier0.png")).convert_alpha()
+        else:
+            self.cursor.image = pygame.image.load(os.path.join(Settings.path_ui, "cursor.png")).convert_alpha()
+
+        self.cursor.rect.center = pygame.mouse.get_pos()
+        self.cursor.rect = self.cursor.image.get_rect(center = self.cursor.rect.center)
+
 
     def select(self):
         if pygame.mouse.get_pressed() == (1, 0, 0):
@@ -103,14 +110,13 @@ class Game(object):
     def watch_for_events(self):
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
-                
                 self.ui.click = True
-                self.change_cursor()
                 self.select()
             else:
                 self.ui.click = False
 
             if event.type == pygame.MOUSEMOTION:
+                self.update_cursor()
                 self.dragpoint = pygame.mouse.get_pos()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LCTRL:
@@ -136,6 +142,7 @@ class Game(object):
             if self.ui.call_carrier == True:
                     self.ships.add(Carrier("carrier.png",self.match.player1))
                     self.ui.call_carrier = False
+                    self.ui.carrier_count -= 1
 
         
 
@@ -156,10 +163,10 @@ class Game(object):
                 team2.get_range(team1,self.team1)
         
     def update(self):
+        
         self.spawn()
         self.background.update(self.offset)
         self.shoot_in_range()
-        self.cursor.update()
         for ship in self.ships:
             ship.update(self.offset)
             if ship.stored_fighters > 0:
@@ -183,6 +190,7 @@ class Game(object):
         self.select_rect()
         self.ui.draw(self.screen)
         self.cursor.draw(self.screen)
+        minimap(self)
         pygame.display.flip()
 
 if __name__ == "__main__":

@@ -15,7 +15,7 @@ class GUI():
 
         self.slider1 = pygame.image.load(os.path.join(Settings.path_ui, "slider.png")).convert_alpha()
         self.slider1_rect = self.slider1.get_rect()
-        self.slider1_rect.center = (2100, 500)
+        self.slider1_rect.center = (self.build_panel_rect.centerx - 180, 500)
 
         self.call_panel = pygame.image.load(os.path.join(Settings.path_ui, "callpanel.png")).convert_alpha()
         self.call_panel_rect = self.call_panel.get_rect()
@@ -23,7 +23,7 @@ class GUI():
 
         self.slider2 = pygame.image.load(os.path.join(Settings.path_ui, "slider.png")).convert_alpha()
         self.slider2_rect = self.slider2.get_rect()
-        self.slider2_rect.center = (0, 300)
+        self.slider2_rect.center = (self.call_panel_rect.centerx + 180, 300)
 
         self.slide_1 = False
         self.slide_2 = False
@@ -120,8 +120,8 @@ class GUI():
 
 
     def update_pos(self):
-        self.slider1_rect.centerx = self.build_panel_rect.centerx - 200
-        self.slider2_rect.centerx = self.call_panel_rect.centerx + 200
+        self.slider1_rect.centerx = self.build_panel_rect.centerx - 180
+        self.slider2_rect.centerx = self.call_panel_rect.centerx + 180
 
     def interaction(self):
         self.mouse = pygame.mouse.get_pos()
@@ -154,7 +154,7 @@ class GUI():
                 if self.call_panel_rect.centerx < 200:
                     self.call_panel_rect.centerx = self.call_panel_rect.centerx + 10
         else:
-            if self.call_panel_rect.centerx > -200:
+            if self.call_panel_rect.centerx > -180:
                 self.call_panel_rect.centerx = self.call_panel_rect.centerx - 10
 
 
