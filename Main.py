@@ -98,7 +98,10 @@ class Game(object):
     def watch_for_events(self):
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
+                self.ui.click = True
                 self.select()
+            else:
+                self.ui.click = False
             if event.type == pygame.MOUSEMOTION:
                 self.dragpoint = pygame.mouse.get_pos()
             if event.type == pygame.KEYDOWN:
