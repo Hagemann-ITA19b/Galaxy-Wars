@@ -34,6 +34,7 @@ class Cursor():
         self.rect = self.image.get_rect()
         self.rect.center = pygame.mouse.get_pos()
 
+
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 
@@ -63,6 +64,10 @@ class Game(object):
         #camera setup
         pygame.event.set_grab(True)
         self.offset = (0, 0)
+
+    def change_cursor(self):
+        if self.ui.call_assault == True:
+            self.cursor.image = pygame.image.load(os.path.join(Settings.path_assault, "assault0.png")).convert_alpha()
 
     def select(self):
         if pygame.mouse.get_pressed() == (1, 0, 0):
@@ -98,10 +103,13 @@ class Game(object):
     def watch_for_events(self):
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
+                
                 self.ui.click = True
+                self.change_cursor()
                 self.select()
             else:
                 self.ui.click = False
+
             if event.type == pygame.MOUSEMOTION:
                 self.dragpoint = pygame.mouse.get_pos()
             if event.type == pygame.KEYDOWN:
@@ -111,14 +119,25 @@ class Game(object):
                                 ship.selected = False
                             elif ship.selected == False:
                                 ship.selected = True
-                if event.key == pygame.K_SPACE:
-                    self.ships.add(Carrier("carrier.png",self.match.player1))
-                if event.key == pygame.K_p:
-                    self.ships.add(Assault("assault.png",2))
+
                 if event.key == pygame.K_ESCAPE:    
                     self.running = False
             elif event.type == pygame.QUIT:
                 self.running = False
+
+
+    def spawn(self):
+        self.click = pygame.mouse.get_pressed()
+        if self.click[2] == 1:
+            if self.ui.call_assault == True:
+                    self.ships.add(Assault("assault.png",self.match.player1))
+                    self.ui.call_assault = False
+                    self.ui.assault_count -= 1
+            if self.ui.call_carrier == True:
+                    self.ships.add(Carrier("carrier.png",self.match.player1))
+                    self.ui.call_carrier = False
+
+        
 
     def shoot_in_range(self):
         self.team1 = pygame.sprite.Group()
@@ -137,6 +156,7 @@ class Game(object):
                 team2.get_range(team1,self.team1)
         
     def update(self):
+        self.spawn()
         self.background.update(self.offset)
         self.shoot_in_range()
         self.cursor.update()
