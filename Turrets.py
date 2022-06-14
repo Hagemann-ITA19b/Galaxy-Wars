@@ -1,7 +1,7 @@
 import pygame
 import os
 import math
-from Settings import Settings
+from settings import Settings
 from random import randint
 
 class Projectile(pygame.sprite.Sprite):

@@ -1,13 +1,13 @@
 import pygame
 import os
 from random import randint
-from Settings import Settings
-from Ships import Carrier, Assault# Carrier # , Battleship, Cruiser, Submarine, Destroyer
-from Starfighters import Starfighter
-from Camera import *
-from GUI import *
-from Logic import *
-from Minimap import *
+from settings import Settings
+from ships import Carrier, Assault# Carrier # , Battleship, Cruiser, Submarine, Destroyer
+from starfighters import Starfighter
+from camera import *
+from gui import *
+from logic import *
+from minimap import *
 
 class Background():
     def __init__(self, filename) -> None:

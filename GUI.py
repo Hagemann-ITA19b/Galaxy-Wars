@@ -1,6 +1,6 @@
 import pygame
 import os
-from Settings import Settings
+from settings import Settings
 
 class GUI():
     def __init__(self) -> None:

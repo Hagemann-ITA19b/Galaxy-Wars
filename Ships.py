@@ -1,7 +1,7 @@
 import pygame
 import os
-from Settings import Settings
-from Turrets import *
+from settings import Settings
+from turrets import *
 from random import randint
 
 class Ship(pygame.sprite.Sprite):

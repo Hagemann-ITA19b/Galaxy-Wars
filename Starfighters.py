@@ -1,9 +1,9 @@
 import pygame
 import os
-from Settings import Settings
-from Turrets import *
+from settings import Settings
+from turrets import *
 from random import randint
-from Ships import *
+from ships import *
 from math import cos, sin
 class Starfighter(pygame.sprite.Sprite):
     def __init__(self, filename, team):
