@@ -49,7 +49,7 @@ class Game(object):
         self.clock = pygame.time.Clock()
         self.screen.fill((0, 0, 0))
         self.background = Background("background.png")
-        self.ui = GUI("ui.png")
+        self.ui = GUI()
         self.match = Match(1)
         self.ships = pygame.sprite.Group()
         self.cursor = Cursor("cursor.png")
@@ -190,7 +190,7 @@ class Game(object):
         self.select_rect()
         self.ui.draw(self.screen)
         self.cursor.draw(self.screen)
-        minimap(self)
+        radar(self)
         pygame.display.flip()
 
 if __name__ == "__main__":

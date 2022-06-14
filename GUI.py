@@ -3,11 +3,22 @@ import os
 from Settings import Settings
 
 class GUI():
-    def __init__(self, filename) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.image = pygame.image.load(os.path.join(Settings.path_ui, filename)).convert_alpha()
-        self.rect = self.image.get_rect()
+        ##ui radar image
+        self.image = pygame.image.load(os.path.join(Settings.path_ui_radar, "radar0.png"))
+        #for animation
+        self.images = []
+        self.imageindex = 0
+        self.clock_time = pygame.time.get_ticks()
+        self.animation_time = 100
+        self.images.append(self.image)
+        for i in range(29):
+             bitmap = pygame.image.load(os.path.join(
+                 Settings.path_ui_radar, f"radar{i}.png"))
+             self.images.append(bitmap)
 
+        self.rect = pygame.Rect(0, 1080 -400, 400, 400)
 
         self.build_panel = pygame.image.load(os.path.join(Settings.path_ui, "buildpanel.png")).convert_alpha()
         self.build_panel_rect = self.build_panel.get_rect()
@@ -41,6 +52,15 @@ class GUI():
         self.assault_count = 0
         self.support_count = 0
         self.carrier_count = 0
+
+    def animate(self,screen):
+            if pygame.time.get_ticks() > self.clock_time:
+                self.clock_time = pygame.time.get_ticks() + self.animation_time
+                self.imageindex += 1
+                if self.imageindex >= len(self.images):
+                    self.imageindex = 0
+                self.image = self.images[self.imageindex]
+            screen.blit(self.image, self.rect)
         
 
     def panel_build(self, screen):
@@ -167,10 +187,10 @@ class GUI():
 
 
     def draw(self, screen):
-        
+        self.animate(screen)
         self.update_pos()
         self.interaction()
-        screen.blit(self.image, self.rect)
+        
         screen.blit(self.build_panel, self.build_panel_rect)
         screen.blit(self.slider1, self.slider1_rect)
         screen.blit(self.call_panel, self.call_panel_rect)

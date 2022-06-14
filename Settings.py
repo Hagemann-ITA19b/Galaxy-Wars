@@ -7,6 +7,7 @@ class Settings(object):
     path_file = os.path.dirname(os.path.abspath(__file__))
     path_ships = os.path.join(path_file, "Ships")
     path_ui = os.path.join(path_file, "UI")
+    path_ui_radar = os.path.join(path_ui, "radar")
     path_turrets = os.path.join(path_file, "Turrets")
     path_bullets = os.path.join(path_file, "Bullets")
     path_starfighters = os.path.join(path_file, "Starfighters")

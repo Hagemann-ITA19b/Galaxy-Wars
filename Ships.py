@@ -35,7 +35,6 @@ class Ship(pygame.sprite.Sprite):
         #for animation
         self.images = []
         self.imageindex = 0
-        
         self.clock_time = pygame.time.get_ticks()
         self.animation_time = 50
         self.images.append(self.original_image) 
