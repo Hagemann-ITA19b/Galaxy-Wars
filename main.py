@@ -66,6 +66,11 @@ class Game(object):
         pygame.event.set_grab(True)
         self.offset = (0, 0)
 
+        #radar setup
+        self.minimap_rect = pygame.Rect(40, self.screen.get_size()[1] -360, 320, 320)
+        self.map_size = (self.screen.get_size()[0], self.screen.get_size()[1])
+
+
     def update_cursor(self):
         if self.ui.call_assault == True:
             self.cursor.image = pygame.image.load(os.path.join(Settings.path_assault, "assault0.png")).convert_alpha()
@@ -169,7 +174,6 @@ class Game(object):
                 self.team2.add(ship)
         
     def update(self):
-        print(self.clock.get_fps())
         self.spawn()
         self.background.update(self.offset)
         self.shoot_in_range()
