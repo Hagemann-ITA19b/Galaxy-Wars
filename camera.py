@@ -11,19 +11,37 @@ def mouse_control(self):
 	# Can't get out of the screen
 	if self.background.rect.left > 0:
 		self.background.rect.left = 0
+		for ship in self.ships:
+			ship.rect.left = ship.rect.left - self.offset[0]
+			ship.waypoint_x = ship.waypoint_x - self.offset[0]
+
 	if self.background.rect.top > 0:
 		self.background.rect.top = 0
+		for ship in self.ships:
+			ship.rect.top = ship.rect.top + self.offset[1]
+			ship.waypoint_y = ship.waypoint_y + self.offset[1]
+
 	if self.background.rect.right < self.screen.get_size()[0]:
 		self.background.rect.right = self.screen.get_size()[0]
+		for ship in self.ships:
+			ship.rect.right = ship.rect.right - self.offset[0]
+			ship.waypoint_x = ship.waypoint_x - self.offset[0]
+
 	if self.background.rect.bottom < self.screen.get_size()[1]:
 		self.background.rect.bottom = self.screen.get_size()[1]
+		for ship in self.ships:
+			ship.rect.bottom = ship.rect.bottom + self.offset[1]
+			ship.waypoint_y = ship.waypoint_y + self.offset[1]
+
+	
+
+
+
 
 
 	if top_border < mouse.y < bottom_border:
-		print(self.background.rect.left)
 		if mouse.x < left_border:
 			self.offset = (5, 0)
-			print("left")
 			pygame.mouse.set_pos((left_border,mouse.y))
 		elif mouse.x > right_border:
 			self.offset = (-5, 0)
@@ -51,3 +69,4 @@ def mouse_control(self):
 			pygame.mouse.set_pos((mouse.x,bottom_border))
 	if left_border < mouse.x < right_border and top_border < mouse.y < bottom_border:
 		self.offset = (0, 0)
+

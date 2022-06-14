@@ -41,8 +41,6 @@ class GUI():
 
         self.click = False
 
-
-
         #for the call panel
         self.call_assault = False
         self.call_support = False
