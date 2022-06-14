@@ -58,6 +58,8 @@ class Game(object):
         self.starting_point = (0, 0)
         self.dragpoint = (0, 0)
         self.recting = pygame.Rect(self.starting_point[0], self.starting_point[1], 0, 0)
+        self.team1 = pygame.sprite.Group()
+        self.team2 = pygame.sprite.Group()
         
         
         #camera setup
@@ -140,30 +142,34 @@ class Game(object):
                     self.ui.call_assault = False
                     self.ui.assault_count -= 1
             if self.ui.call_carrier == True:
-                    self.ships.add(Carrier("carrier.png",self.match.player1))
+                    self.ships.add(Carrier("carrier.png",2))
                     self.ui.call_carrier = False
                     self.ui.carrier_count -= 1
+            self.pick_team()
+
 
         
 
     def shoot_in_range(self):
-        self.team1 = pygame.sprite.Group()
-        self.team2 = pygame.sprite.Group()
+        for ship in self.ships:
+            ship.range_check(self.screen)
+
+        for team1 in self.team1:
+            for team2 in self.team2:
+                team1.get_range(team2,self.team2)
+                team2.get_range(team1,self.team1)
+
+
+
+    def pick_team(self):
         for ship in self.ships:
             if ship.team == 1:
                 self.team1.add(ship)
             else:
                 self.team2.add(ship)
         
-        for team1 in self.team1:
-            for team2 in self.team2:
-                team1.range_check(self.screen)
-                team2.range_check(self.screen)
-                team1.get_range(team2,self.team2)
-                team2.get_range(team1,self.team1)
-        
     def update(self):
-        
+        print(self.clock.get_fps())
         self.spawn()
         self.background.update(self.offset)
         self.shoot_in_range()
