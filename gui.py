@@ -1,6 +1,7 @@
 import pygame
 import os
 from settings import Settings
+from ships import Carrier, Assault
 
 class GUI():
     def __init__(self) -> None:
@@ -51,6 +52,13 @@ class GUI():
         self.support_count = 0
         self.carrier_count = 0
 
+        self.build_queue = []
+        self.assault_time = 1000
+        self.carrier_time = 500
+
+        self.construction_time = 0
+
+
     def animate(self,screen):
             if pygame.time.get_ticks() > self.clock_time:
                 self.clock_time = pygame.time.get_ticks() + self.animation_time
@@ -83,16 +91,14 @@ class GUI():
             build_assault = Font.render("assault", True, (255, 255, 255))
             screen.blit(build_assault, build_assault_rect)
             if self.click == True:
-                #self.build_assault += 1
-                self.assault_count += 1
+                self.build_queue.append("assault")
                 self.click = False
         
         if build_carrier_rect.collidepoint(self.mouse):
             build_carrier = Font.render("carrier", True, (255, 255, 255))
             screen.blit(build_carrier, build_carrier_rect)
             if self.click == True:
-                #self.build_carrier += 1
-                self.carrier_count += 1
+                self.build_queue.append("carrier")
                 self.click = False
                 
 
@@ -176,6 +182,47 @@ class GUI():
                 self.call_panel_rect.centerx = self.call_panel_rect.centerx - 10
 
 
+    def build_ship(self):
+
+        if len(self.build_queue) > 0:
+            self.constructing = True
+            print(self.build_queue)
+        else:
+            self.constructing = False
+
+        if self.constructing == True:
+            if self.build_queue[0] == "assault":
+                
+                self.assault_time = self.assault_time - 1
+                self.construction_time = self.assault_time
+                if self.assault_time == 0:
+                    self.assault_count += 1
+                    self.build_queue.pop(0)
+                    self.constructing = False
+                    self.assault_time = 1000
+
+            elif self.build_queue[0] == "carrier":
+                self.carrier_time = self.carrier_time - 1
+                self.construction_time = self.carrier_time
+                if self.carrier_time == 0:
+                    self.carrier_count += 1
+                    self.build_queue.pop(0)
+                    self.constructing = False
+                    self.carrier_time = 500
+
+    def display_build_queue(self, screen):
+        Font = pygame.font.SysFont("comicsansms", 30)
+        assault = Font.render(str(self.build_queue), True, (255, 255, 255))
+        screen.blit(assault, (20, Settings.window_height - 450))
+        remain_time = 1000 - self.construction_time 
+
+        pygame.draw.rect(screen, (255,0,0), pygame.Rect(10, 700, self.construction_time, 10))
+
+
+
+    
+
+
        
         
 
@@ -185,6 +232,7 @@ class GUI():
 
 
     def draw(self, screen):
+        self.build_ship()
         self.animate(screen)
         self.update_pos()
         self.interaction()
@@ -195,4 +243,5 @@ class GUI():
         screen.blit(self.slider2, self.slider2_rect)
         self.panel_call(screen)
         self.panel_build(screen)
+        self.display_build_queue(screen)
  

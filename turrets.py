@@ -83,7 +83,7 @@ class Dualies(Turret):
         self.damage_shield = 20
         self.damage_hull = 5
         self.range = 500
-        self.rate = 50
+        self.rate = 100
         self.image = "bullet.png"
 
 class Breacher(Turret):
