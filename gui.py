@@ -56,7 +56,7 @@ class GUI():
         self.assault_time = 1000
         self.carrier_time = 500
 
-        self.construction_time = 0
+        self.construction_time = 1000
 
 
     def animate(self,screen):
@@ -185,7 +185,9 @@ class GUI():
     def build_ship(self):
 
         if len(self.build_queue) > 0:
+            self.calculate_multiplier()
             self.constructing = True
+            
             print(self.build_queue)
         else:
             self.constructing = False
@@ -195,7 +197,7 @@ class GUI():
                 
                 self.assault_time = self.assault_time - 1
                 self.construction_time = self.assault_time
-                if self.assault_time == 0:
+                if self.assault_time == 1:
                     self.assault_count += 1
                     self.build_queue.pop(0)
                     self.constructing = False
@@ -210,13 +212,27 @@ class GUI():
                     self.constructing = False
                     self.carrier_time = 500
 
+    def calculate_multiplier(self):
+        if self.build_queue[0] == "assault" and self.assault_time == 1000:
+                self.construction_time = self.assault_time           
+                self.multiplier = 1000 // self.construction_time
+        elif self.build_queue[0] == "carrier" and self.carrier_time == 500:
+                self.construction_time = self.carrier_time
+                self.multiplier = 1000 // self.construction_time
+                print(1000 // self.construction_time)
+                print(self.multiplier)
+                print("it works")
+
     def display_build_queue(self, screen):
         Font = pygame.font.SysFont("comicsansms", 30)
         assault = Font.render(str(self.build_queue), True, (255, 255, 255))
         screen.blit(assault, (20, Settings.window_height - 450))
-        remain_time = 1000 - self.construction_time 
+        if self.constructing == True:
+            
+            print(self.multiplier)
+            pygame.draw.rect(screen, (255,0,0), pygame.Rect(10, 700, self.construction_time * self.multiplier, 10))
 
-        pygame.draw.rect(screen, (255,0,0), pygame.Rect(10, 700, self.construction_time, 10))
+
 
 
 
