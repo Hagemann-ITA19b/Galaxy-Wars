@@ -10,8 +10,6 @@ class Ship(pygame.sprite.Sprite):
         self.size = (150,150)
         self.original_image = pygame.image.load(os.path.join(Settings.path_ships, filename)).convert_alpha()
         self.original_image = pygame.transform.scale(self.original_image, self.size)
-        # self.image = pygame.image.load(os.path.join(Settings.path_ships, filename)).convert_alpha()
-        # self.image = pygame.transform.scale(self.image, self.size)
         self.image = self.original_image
         self.rect = self.image.get_rect() 
         self.mouse = pygame.mouse.get_pos()
@@ -209,6 +207,7 @@ class Ship(pygame.sprite.Sprite):
 class Carrier(Ship):
     def __init__(self, filename, team):
         super().__init__(filename, team)
+        self.size = (150,150)
         self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
         self.speed = 2
         self.stored_fighters = 3
@@ -223,6 +222,7 @@ class Carrier(Ship):
 class Assault(Ship):
     def __init__(self, filename, team):
         super().__init__(filename, team)
+        self.size = (150,150)
         self.speed = 2
         self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
         self.turrets.add(Breacher(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
@@ -237,4 +237,22 @@ class Assault(Ship):
 
     def speed_up(self):
         self.speed += 1
+
+class dreadnought(Ship):
+    def __init__(self, filename, team):
+        super().__init__(filename, team)
+        self.size = (500, 1000)
+        self.speed = 2
+        self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
+        self.turrets.add(Breacher(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
+        self.range = 500
+        self.name = "dreadnought"
+        self.path = Settings.path_dreadnought
+        self.images.clear()
+        for i in range(3):
+            bitmap = pygame.image.load(os.path.join(
+                Settings.path_dreadnought, f"dreadnought{i}.png"))
+            scaled = pygame.transform.scale(bitmap,self.size)
+            self.images.append(bitmap)
+        self.rect = self.image.get_rect() 
 

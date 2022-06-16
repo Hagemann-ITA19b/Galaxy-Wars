@@ -2,7 +2,7 @@ import pygame
 import os
 from random import randint
 from settings import Settings
-from ships import Carrier, Assault# Carrier # , Battleship, Cruiser, Submarine, Destroyer
+from ships import Carrier, Assault, dreadnought
 from starfighters import Starfighter
 from camera import *
 from gui import *
@@ -146,6 +146,10 @@ class Game(object):
                     self.ships.add(Carrier("carrier.png",2))
                     self.ui.call_carrier = False
                     self.ui.carrier_count -= 1
+            if self.ui.call_dreadnought == True:
+                    self.ships.add(dreadnought("dreadnought.png",self.match.player1))
+                    self.ui.call_dreadnought = False
+                    self.ui.dreadnought_count -= 1
             self.pick_team()
 
 

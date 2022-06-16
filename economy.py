@@ -8,6 +8,7 @@ class Economy():
         #prices for ships
         self.assault_cost = 500
         self.carrier_cost = 400
+        self.dreadnought_cost = 600
 
     def update(self):
         self.budget += self.income

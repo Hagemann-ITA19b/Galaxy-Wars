@@ -47,15 +47,18 @@ class GUI():
         self.call_assault = False
         self.call_support = False
         self.call_carrier = False
+        self.call_dreadnought = False
 
         #count of the units
         self.assault_count = 0
         self.support_count = 0
         self.carrier_count = 0
+        self.dreadnought_count = 0
 
         self.build_queue = []
         self.assault_time = 1000
         self.carrier_time = 500
+        self.dreadnought_time = 1000
 
         self.construction_time = 1000
 
@@ -85,10 +88,15 @@ class GUI():
         build_carrier_rect = build_carrier.get_rect()
         build_carrier_rect.center = (self.build_panel_rect.centerx, self.build_panel_rect.centery + 50)
 
+        build_dreadnought = Font.render("dreadnought" + " " + str(self.team1.dreadnought_cost)+"$", True, (0, 0, 0))
+        build_dreadnought_rect = build_dreadnought.get_rect()
+        build_dreadnought_rect.center = (self.build_panel_rect.centerx, self.build_panel_rect.centery + 100)
+
 
         #blit the buttons
         screen.blit(build_assault, build_assault_rect)
         screen.blit(build_carrier, build_carrier_rect)
+        screen.blit(build_dreadnought, build_dreadnought_rect)
 
         #logic for the buttons
         
@@ -115,6 +123,19 @@ class GUI():
                 else:
                     self.queue_full = True
                 self.click = False
+
+        if build_dreadnought_rect.collidepoint(self.mouse):
+            build_dreadnought = Font.render("dreadnought" + " " + str(self.team1.dreadnought_cost) + "$", True, (255, 255, 255))
+            screen.blit(build_dreadnought, build_dreadnought_rect)
+            if self.click == True and self.team1.budget > self.team1.dreadnought_cost:
+                if len(self.build_queue) < 5:
+                    self.queue_full = False
+                    self.build_queue.append("dreadnought")
+                    self.team1.budget -= self.team1.dreadnought_cost
+                else:
+                    self.queue_full = True
+                self.click = False
+
                 
 
         
@@ -133,9 +154,14 @@ class GUI():
         carrier_rect = carrier.get_rect()
         carrier_rect.center = (self.call_panel_rect.centerx, self.call_panel_rect.centery + 50)
 
+        dreadnought = Font.render("dreadnought" + " " + str(self.dreadnought_count)+"x", True, (0, 0, 0))
+        dreadnought_rect = dreadnought.get_rect()
+        dreadnought_rect.center = (self.call_panel_rect.centerx, self.call_panel_rect.centery + 100)
+
         #blit the buttons
         screen.blit(carrier, carrier_rect)
         screen.blit(assault, assault_rect)
+        screen.blit(dreadnought, dreadnought_rect)
 
         #logic for the buttons
         if assault_rect.collidepoint(self.mouse) and self.assault_count > 0:
@@ -144,6 +170,7 @@ class GUI():
             if self.click == True:
                 self.call_assault = True
                 self.call_carrier = False
+                self.call_dreadnought = False
 
         
         if carrier_rect.collidepoint(self.mouse) and self.carrier_count > 0:
@@ -151,6 +178,15 @@ class GUI():
             screen.blit(carrier, carrier_rect)
             if self.click == True:
                 self.call_carrier = True
+                self.call_assault = False
+                self.call_dreadnought = False
+
+        if dreadnought_rect.collidepoint(self.mouse) and self.dreadnought_count > 0:
+            dreadnought = Font.render("Dreadnought", True, (255, 255, 255))
+            screen.blit(dreadnought, dreadnought_rect)
+            if self.click == True:
+                self.call_dreadnought = True
+                self.call_carrier = False
                 self.call_assault = False
 
     
@@ -206,8 +242,19 @@ class GUI():
             self.constructing = False
 
         if self.constructing == True:
-            if self.build_queue[0] == "assault":
-                
+
+            if self.build_queue[0] == "dreadnought":
+                self.dreadnought_time = self.dreadnought_time - 1
+                self.construction_time = self.dreadnought_time
+                if self.dreadnought_time == 1:
+                    self.dreadnought_count += 1
+                    self.build_queue.pop(0)
+                    self.constructing = False
+                    self.dreadnought_time = 1000
+
+
+
+            elif self.build_queue[0] == "assault":
                 self.assault_time = self.assault_time - 1
                 self.construction_time = self.assault_time
                 if self.assault_time == 1:
@@ -225,6 +272,9 @@ class GUI():
                     self.constructing = False
                     self.carrier_time = 500
 
+
+                    
+
     def calculate_multiplier(self):
         if self.build_queue[0] == "assault" and self.assault_time == 1000:
                 self.construction_time = self.assault_time           
@@ -232,6 +282,10 @@ class GUI():
         elif self.build_queue[0] == "carrier" and self.carrier_time == 500:
                 self.construction_time = self.carrier_time
                 self.multiplier = 1000 // self.construction_time
+        elif self.build_queue[0] == "dreadnought" and self.dreadnought_time == 1000:
+                self.construction_time = self.dreadnought_time
+                self.multiplier = 1000 // self.construction_time
+        
 
 
     def display_build_queue(self, screen):
