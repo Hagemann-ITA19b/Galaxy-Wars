@@ -13,17 +13,13 @@ class Background():
     def __init__(self, filename) -> None:
         super().__init__()
         self.image = pygame.image.load(os.path.join(Settings.path_ui, filename)).convert()
-        #self.image = pygame.transform.scale(self.image, (Settings.window_width, Settings.window_height))
         self.rect = self.image.get_rect()
 
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 
-
-
     def update(self, offset):
-    
         self.rect.centerx = self.rect.centerx + offset[0]
         self.rect.centery = self.rect.centery - offset[1]
 
@@ -108,7 +104,7 @@ class Game(object):
 
     def run(self):
         while self.running:
-            self.clock.tick(60)                         
+            self.clock.tick(60)           
             self.watch_for_events()
             self.update()
             self.draw()
@@ -196,7 +192,6 @@ class Game(object):
         for ships in self.ships:
             ships.draw(self.screen)
         
-
         self.select_rect()
         self.ui.draw(self.screen)
         self.cursor.draw(self.screen)

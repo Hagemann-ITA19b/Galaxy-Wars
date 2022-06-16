@@ -10,6 +10,5 @@ class Economy():
         self.carrier_cost = 400
 
     def update(self):
-        print(self.budget)
         self.budget += self.income
 
