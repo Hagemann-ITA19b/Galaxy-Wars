@@ -1,6 +1,7 @@
 import pygame
 import os
 from settings import Settings
+from economy import Economy
 from ships import Carrier, Assault
 
 class GUI():
@@ -58,6 +59,9 @@ class GUI():
 
         self.construction_time = 1000
 
+        #finace
+        self.team1 = Economy(1, 50, 1)
+
 
     def animate(self,screen):
             if pygame.time.get_ticks() > self.clock_time:
@@ -73,11 +77,11 @@ class GUI():
         Font = pygame.font.SysFont("comicsansms", 30)
 
         #for the build panel buttons
-        build_assault = Font.render("assault", True, (0, 0, 0))
+        build_assault = Font.render("assault" + " " +str(self.team1.assault_cost)+"$", True, (0, 0, 0))
         build_assault_rect = build_assault.get_rect()
         build_assault_rect.center = (self.build_panel_rect.centerx, self.build_panel_rect.centery)
 
-        build_carrier = Font.render("carrier", True, (0, 0, 0))
+        build_carrier = Font.render("carrier" + " " + str(self.team1.carrier_cost)+"$", True, (0, 0, 0))
         build_carrier_rect = build_carrier.get_rect()
         build_carrier_rect.center = (self.build_panel_rect.centerx, self.build_panel_rect.centery + 50)
 
@@ -87,18 +91,29 @@ class GUI():
         screen.blit(build_carrier, build_carrier_rect)
 
         #logic for the buttons
+        
         if build_assault_rect.collidepoint(self.mouse):
-            build_assault = Font.render("assault", True, (255, 255, 255))
+            build_assault = Font.render("assault" + " " + str(self.team1.assault_cost)+ "$", True, (255, 255, 255))
             screen.blit(build_assault, build_assault_rect)
-            if self.click == True:
-                self.build_queue.append("assault")
+            if self.click == True and self.team1.budget > self.team1.assault_cost:
+                if len(self.build_queue) < 5:
+                    self.queue_full = False
+                    self.build_queue.append("assault")
+                    self.team1.budget -= self.team1.assault_cost
+                else:
+                    self.queue_full = True
                 self.click = False
         
         if build_carrier_rect.collidepoint(self.mouse):
-            build_carrier = Font.render("carrier", True, (255, 255, 255))
+            build_carrier = Font.render("carrier" + " " + str(self.team1.carrier_cost) + "$", True, (255, 255, 255))
             screen.blit(build_carrier, build_carrier_rect)
-            if self.click == True:
-                self.build_queue.append("carrier")
+            if self.click == True and self.team1.budget > self.team1.carrier_cost:
+                if len(self.build_queue) < 5:
+                    self.queue_full = False
+                    self.build_queue.append("carrier")
+                    self.team1.budget -= self.team1.carrier_cost
+                else:
+                    self.queue_full = True
                 self.click = False
                 
 
@@ -187,8 +202,6 @@ class GUI():
         if len(self.build_queue) > 0:
             self.calculate_multiplier()
             self.constructing = True
-            
-            print(self.build_queue)
         else:
             self.constructing = False
 
@@ -219,18 +232,25 @@ class GUI():
         elif self.build_queue[0] == "carrier" and self.carrier_time == 500:
                 self.construction_time = self.carrier_time
                 self.multiplier = 1000 // self.construction_time
-                print(1000 // self.construction_time)
-                print(self.multiplier)
-                print("it works")
+
 
     def display_build_queue(self, screen):
-        Font = pygame.font.SysFont("comicsansms", 30)
-        assault = Font.render(str(self.build_queue), True, (255, 255, 255))
-        screen.blit(assault, (20, Settings.window_height - 450))
         if self.constructing == True:
-            
-            print(self.multiplier)
+            Font = pygame.font.SysFont("comicsansms", 30)
+            assault = Font.render(str(self.build_queue), True, (255, 255, 255))
+            screen.blit(assault, (20, Settings.window_height - 450))
             pygame.draw.rect(screen, (255,0,0), pygame.Rect(10, 700, self.construction_time * self.multiplier, 10))
+
+            if self.queue_full == True:
+                queue_full = Font.render("Queue is full", True, (255, 100, 0))
+                screen.blit(queue_full, (900, Settings.window_height - 450))
+                if len(self.build_queue) < 5:
+                    self.queue_full = False
+
+    def display_budget(self, screen):
+        Font = pygame.font.SysFont("comicsansms", 30)
+        budget = Font.render("Budget: " + str(self.team1.budget), True, (0, 255, 255))
+        screen.blit(budget, (20, Settings.window_height - 600))
 
 
 
@@ -248,6 +268,7 @@ class GUI():
 
 
     def draw(self, screen):
+        self.team1.update()
         self.build_ship()
         self.animate(screen)
         self.update_pos()
@@ -260,4 +281,5 @@ class GUI():
         self.panel_call(screen)
         self.panel_build(screen)
         self.display_build_queue(screen)
+        self.display_budget(screen)
  
