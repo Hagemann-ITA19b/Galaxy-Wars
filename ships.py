@@ -28,7 +28,6 @@ class Ship(pygame.sprite.Sprite):
         self.regeneration_rate = 1
         self.destroyed = False
         self.current_angle = 0
-        self.slots = 2
         self.stored_fighters = 0
         #for animation
         self.images = []
@@ -238,14 +237,16 @@ class Assault(Ship):
     def speed_up(self):
         self.speed += 1
 
-class dreadnought(Ship):
+class Dreadnought(Ship):
     def __init__(self, filename, team):
         super().__init__(filename, team)
         self.size = (500, 1000)
-        self.speed = 2
+        self.speed = 1
         self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
         self.turrets.add(Breacher(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
         self.range = 500
+        self.hull = 10000
+        self.shields = 10000
         self.name = "dreadnought"
         self.path = Settings.path_dreadnought
         self.images.clear()
@@ -253,6 +254,4 @@ class dreadnought(Ship):
             bitmap = pygame.image.load(os.path.join(
                 Settings.path_dreadnought, f"dreadnought{i}.png"))
             scaled = pygame.transform.scale(bitmap,self.size)
-            self.images.append(bitmap)
-        self.rect = self.image.get_rect() 
-
+            self.images.append(scaled)

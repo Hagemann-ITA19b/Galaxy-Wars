@@ -2,12 +2,13 @@ import pygame
 import os
 from random import randint
 from settings import Settings
-from ships import Carrier, Assault, dreadnought
+from ships import Carrier, Assault, Dreadnought
 from starfighters import Starfighter
 from camera import *
 from gui import *
 from logic import *
 from minimap import *
+from station import *
 
 class Background():
     def __init__(self, filename) -> None:
@@ -57,6 +58,11 @@ class Game(object):
         self.team1 = pygame.sprite.Group()
         self.team2 = pygame.sprite.Group()
         
+        #add 2 stations to the game
+        self.stations = pygame.sprite.Group()
+        self.stations.add(Spacestation("spacestation0.png", 1, 300, 300))
+        self.stations.add(Spacestation("spacestation0.png", 2, 2700, 2700))
+        self.ships.add(self.stations)
         
         #camera setup
         pygame.event.set_grab(True)
@@ -139,7 +145,7 @@ class Game(object):
         self.click = pygame.mouse.get_pressed()
         if self.click[2] == 1:
             if self.ui.call_assault == True:
-                    self.ships.add(Assault("assault.png",self.match.player1))
+                    self.ships.add(Assault("assault.png",2))
                     self.ui.call_assault = False
                     self.ui.assault_count -= 1
             if self.ui.call_carrier == True:
@@ -147,7 +153,7 @@ class Game(object):
                     self.ui.call_carrier = False
                     self.ui.carrier_count -= 1
             if self.ui.call_dreadnought == True:
-                    self.ships.add(dreadnought("dreadnought.png",self.match.player1))
+                    self.ships.add(Dreadnought("dreadnought.png",2))
                     self.ui.call_dreadnought = False
                     self.ui.dreadnought_count -= 1
             self.pick_team()
@@ -164,6 +170,15 @@ class Game(object):
                 team1.get_range(team2,self.team2)
                 team2.get_range(team1,self.team1)
 
+    def check_status(self):
+        for station in self.stations:
+            if station.destroyed == True and station.team == 1:
+                self.won = False
+                self.running = False
+            elif station.destroyed == True and station.team == 2:
+                self.won = True
+                self.running = False
+
 
 
     def pick_team(self):
@@ -174,6 +189,7 @@ class Game(object):
                 self.team2.add(ship)
         
     def update(self):
+        self.check_status()
         self.spawn()
         self.background.update(self.offset)
         self.shoot_in_range()
@@ -182,11 +198,7 @@ class Game(object):
             if ship.stored_fighters > 0:
                 self.ships.add(Starfighter("starfighter.png", ship.team))
                 ship.stored_fighters -= 1
- 
-                
-            
 
-            
 
     def draw(self):
         mouse_control(self)
@@ -195,6 +207,7 @@ class Game(object):
         
         for ships in self.ships:
             ships.draw(self.screen)
+
         
         self.select_rect()
         self.ui.draw(self.screen)
