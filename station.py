@@ -1,6 +1,7 @@
 import pygame
 from settings import Settings
 import os
+from turrets import *
 
 class Spacestation(pygame.sprite.Sprite):
     def __init__(self, filename, team, x, y):
@@ -38,6 +39,10 @@ class Spacestation(pygame.sprite.Sprite):
                 Settings.path_spacestation, f"spacestation{i}.png"))
             scaled = pygame.transform.scale(bitmap,self.size)
             self.images.append(scaled)
+
+        #turrets
+        for i in range(100):
+            self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom+ 100)))
 
         #check sprites
         self.appended_damaged = False
