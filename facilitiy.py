@@ -2,6 +2,7 @@ import pygame
 from settings import Settings
 import os
 from turrets import *
+from gui import *
 
 class Mine(pygame.sprite.Sprite):
     def __init__(self, filename, team, x, y):
@@ -13,10 +14,8 @@ class Mine(pygame.sprite.Sprite):
         self.rect = self.image.get_rect() 
         self.rect.center = (x,y)
         self.selected = False
-        self.turrets = pygame.sprite.Group()
         self.team = team
         self.range = 500
-        self.aiming = False
         self.hull = 10000
         self.shields = 10000
         self.regeneration_rate = 1
@@ -32,6 +31,8 @@ class Mine(pygame.sprite.Sprite):
 
         self.team_changed = False
 
+        self.income = 20000
+
         #for animation
         self.images = []
         self.imageindex = 0
@@ -45,8 +46,6 @@ class Mine(pygame.sprite.Sprite):
             scaled = pygame.transform.scale(bitmap,self.size)
             self.images.append(scaled)
 
-        #turrets
-        self.turrets.add(Defender(self.rect.centerx, self.rect.centery))
 
         #check sprites
         self.appended_damaged = False
@@ -69,7 +68,7 @@ class Mine(pygame.sprite.Sprite):
     def range_check(self, screen):
         self.range_circle = pygame.draw.circle(screen, (255, 0, 0), self.rect.center, self.range)
 
-    def update_target(self):
+    def update_team(self):
         if self.team1_progress == 100:
             self.team = 1
         elif self.team2_progress == 100:
@@ -90,7 +89,7 @@ class Mine(pygame.sprite.Sprite):
                     self.team1_progress -= 1
 
                 self.team_changed = True
-            self.update_target()
+            self.update_team()
         
         
 
@@ -99,9 +98,8 @@ class Mine(pygame.sprite.Sprite):
         pygame.draw.rect(screen, (255, 0, 0), self.rect, 2)
 
     def draw_healthbar(self, screen):
-        pygame.draw.rect(screen, (0, 255, 0), (self.rect.centerx - 50, self.rect.centery - 200, self.team1_progress, 10))
-        pygame.draw.rect(screen, (255, 0, 0), (self.rect.centerx - 50, self.rect.centery - 100, self.team2_progress, 10))
-        print(self.team1_progress, self.team2_progress)
+        pygame.draw.rect(screen, (0, 0, 255), (self.rect.centerx - 50, self.rect.centery - 150, self.team1_progress, 20))
+        pygame.draw.rect(screen, (255, 0, 0), (self.rect.centerx - 50, self.rect.centery - 150, self.team2_progress, 20))
 
         pygame.draw.rect(screen, (0, 0, 255), (self.rect.centerx - 50, self.rect.centery - 61, self.shields *0.01, 3))
         pygame.draw.rect(screen, (0, 255, 0), (self.rect.centerx - 50, self.rect.centery - 58, self.hull* 0.01, 3))
@@ -112,30 +110,23 @@ class Mine(pygame.sprite.Sprite):
         self.rect.centery = self.rect.centery - offset[1]
         self.animate()
 
-        for turret in self.turrets:
-            turret.update(self.rect.center)
-
         self.regenerate()
         self.check_death()
 
 
     def shoot(self, target, target_group):
-        for turret in self.turrets:
-            turret.shoot(target, target_group)
+        pass
 
 
     def check_death(self):
         if self.hull <= 0:
             self.destroyed = True
 
-    def draw_turrets(self, screen):
-        for turret in self.turrets:
-            turret.draw(screen)
+
 
     def draw(self, screen):
         if self.selected:
             self.mark(screen)
 
-        self.draw_turrets(screen)
         screen.blit(self.image, self.rect)
         self.draw_healthbar(screen)

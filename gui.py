@@ -64,6 +64,7 @@ class GUI():
 
         #finace
         self.team1 = Economy(1, 50, 1)
+        self.team2 = Economy(2, 50, 1)
 
 
     def animate(self,screen):

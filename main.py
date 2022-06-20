@@ -61,8 +61,8 @@ class Game(object):
         
         #add 2 stations to the game
         self.stations = pygame.sprite.Group()
-        self.stations.add(Spacestation("spacestation0.png", 1, 300, 300))
-        self.stations.add(Spacestation("spacestation0.png", 2, 2700, 2700))
+        self.stations.add(Spacestation("spacestation0.png", 1, 300, 300)) #team 1
+        self.stations.add(Spacestation("spacestation0.png", 2, 2700, 2700)) #team 2
         self.ships.add(self.stations)
 
         #add mines to the game
@@ -84,12 +84,15 @@ class Game(object):
             if mine.team_changed == True:
                 if mine.team == 1:
                     self.team1.add(mine)
+                    self.ui.team1.additional_income = mine.income
                     self.team2.remove(mine)
-                else:
+                    self.ui.team2.additional_income = 0
+                elif mine.team == 2:
                     self.team2.add(mine)
+                    self.ui.team2.additional_income = mine.income    
                     self.team1.remove(mine)
+                    self.ui.team1.additional_income = 0
                 mine.team_changed = False
-
 
     def update_cursor(self):
         if self.ui.call_assault == True:
@@ -132,6 +135,9 @@ class Game(object):
             self.watch_for_events()
             self.update()
             self.draw()
+            for mine in self.mines:
+                print(mine.team, "!", mine.income)
+            print(self.ui.team1.additional_income)
         pygame.quit()       
 
     def watch_for_events(self):
