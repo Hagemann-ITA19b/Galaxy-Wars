@@ -27,8 +27,8 @@ class Starfighter(pygame.sprite.Sprite):
         self.range = 500
         self.aiming = False
         self.hull = 100
-        self.shields = 100
-        self.max_shields = 100
+        self.shields = 0
+        self.max_shields = 0
         self.regeneration_rate = 1
         self.destroyed = False
         self.current_angle = 0

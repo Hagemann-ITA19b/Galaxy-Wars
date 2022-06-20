@@ -59,7 +59,7 @@ class Turret(pygame.sprite.Sprite):
         if pygame.time.get_ticks() > self.clock_time:
             self.clock_time = pygame.time.get_ticks() + self.rate
             for i in range(self.gunbarrel):
-                self.projectile.add(Projectile(self.image, target[0], target[1],self.x + i*10 ,self.y + i*10))
+                self.projectile.add(Projectile(self.image, target[0], target[1],self.x + i*12 ,self.y + i*12))
         for projectile in self.projectile:
             for target in target_group:
                 if projectile.rect.colliderect(target.rect):
@@ -96,6 +96,16 @@ class Breacher(Turret):
         self.range = 5000
         self.rate = 5000
         self.image = "breacher.png"
+
+class Defender(Turret):
+    def __init__(self,x,y):
+        super().__init__(x,y)
+        self.gunbarrel = 10
+        self.damage_shield = 1
+        self.damage_hull = 10
+        self.range = 500
+        self.rate = 100
+        self.image = "defender.png"
 
 
 

@@ -27,6 +27,8 @@ class Mine(pygame.sprite.Sprite):
         self.path = Settings.path_spacestation
         self.name = filename
 
+        self.capture_list = []
+
         #for animation
         self.images = []
         self.imageindex = 0
@@ -41,8 +43,7 @@ class Mine(pygame.sprite.Sprite):
             self.images.append(scaled)
 
         #turrets
-        for i in range(100):
-            self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom+ 100)))
+        self.turrets.add(Defender(self.rect.centerx, self.rect.centery))
 
         #check sprites
         self.appended_damaged = False
@@ -65,32 +66,15 @@ class Mine(pygame.sprite.Sprite):
     def range_check(self, screen):
         self.range_circle = pygame.draw.circle(screen, (255, 0, 0), self.rect.center, self.range)
 
-    def update_target(self, target, group):
-            self.shoot(target.rect.center, group)
+    def update_target():
+        pass
 
     def regenerate(self):
         if self.shields < 1000:
             self.shields += self.regeneration_rate
 
     def get_range(self, target, group):
-        if self.aiming == False:
-            if self.range_circle.collidepoint(target.rect.center):
-                self.aiming = True
-                self.target = target
-                self.target_group = group
-            else:
-                self.aiming = False
-                self.target = None
-                self.target_group = None
-
-        if self.aiming == True:
-            self.update_target(self.target, self.target_group)
-            if not self.range_circle.collidepoint(self.target.rect.center) or self.target.destroyed:
-                self.target = None
-                self.target_group = None
-                self.aiming = False
-
-                
+        pass
 
     def mark(self, screen):
         pygame.draw.rect(screen, (255, 0, 0), self.rect, 2)
