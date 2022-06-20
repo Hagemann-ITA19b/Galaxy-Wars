@@ -9,6 +9,7 @@ from gui import *
 from logic import *
 from minimap import *
 from station import *
+from facilitiy import *
 
 class Background():
     def __init__(self, filename) -> None:
@@ -63,6 +64,11 @@ class Game(object):
         self.stations.add(Spacestation("spacestation0.png", 1, 300, 300))
         self.stations.add(Spacestation("spacestation0.png", 2, 2700, 2700))
         self.ships.add(self.stations)
+
+        #add mines to the game
+        self.mines = pygame.sprite.Group()
+        self.mines.add(Mine("mine1.png", 1, 1500, 1500))
+        self.ships.add(self.mines)        
         
         #camera setup
         pygame.event.set_grab(True)
