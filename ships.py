@@ -86,7 +86,7 @@ class Ship(pygame.sprite.Sprite):
 
         if self.aiming == True:
             self.update_target(self.target, self.target_group)
-            if not self.range_circle.collidepoint(self.target.rect.center) or self.target.destroyed:
+            if not self.range_circle.collidepoint(self.target.rect.center) or self.target.destroyed or self.target_group == self.team:
                 self.target = None
                 self.target_group = None
                 self.aiming = False

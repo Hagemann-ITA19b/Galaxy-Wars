@@ -79,6 +79,18 @@ class Game(object):
         self.map_size = (self.screen.get_size()[0], self.screen.get_size()[1])
 
 
+    def update_team(self):
+        for mine in self.mines:
+            if mine.team_changed == True:
+                if mine.team == 1:
+                    self.team1.add(mine)
+                    self.team2.remove(mine)
+                else:
+                    self.team2.add(mine)
+                    self.team1.remove(mine)
+                mine.team_changed = False
+
+
     def update_cursor(self):
         if self.ui.call_assault == True:
             self.cursor.image = pygame.image.load(os.path.join(Settings.path_assault, "assault0.png")).convert_alpha()
@@ -151,7 +163,7 @@ class Game(object):
         self.click = pygame.mouse.get_pressed()
         if self.click[2] == 1:
             if self.ui.call_assault == True:
-                    self.ships.add(Assault("assault.png",2))
+                    self.ships.add(Assault("assault.png",1))
                     self.ui.call_assault = False
                     self.ui.assault_count -= 1
             if self.ui.call_carrier == True:
@@ -195,6 +207,7 @@ class Game(object):
                 self.team2.add(ship)
         
     def update(self):
+        self.update_team()
         self.check_status()
         self.spawn()
         self.background.update(self.offset)

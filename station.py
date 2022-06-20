@@ -41,7 +41,7 @@ class Spacestation(pygame.sprite.Sprite):
             self.images.append(scaled)
 
         #turrets
-        for i in range(100):
+        for i in range(1):
             self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom+ 100)))
 
         #check sprites

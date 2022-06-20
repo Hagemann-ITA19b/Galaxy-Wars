@@ -36,6 +36,7 @@ class Starfighter(pygame.sprite.Sprite):
         self.stored_fighters = 0
         self.angle = 0
         self.idle = False
+        self.name = "Starfighter"
 
         self.waypoint_x = self.mouse[0] 
         self.waypoint_y = self.mouse[1]

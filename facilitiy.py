@@ -27,7 +27,10 @@ class Mine(pygame.sprite.Sprite):
         self.path = Settings.path_spacestation
         self.name = filename
 
-        self.capture_list = []
+        self.team1_progress = 0
+        self.team2_progress = 0
+
+        self.team_changed = False
 
         #for animation
         self.images = []
@@ -66,23 +69,43 @@ class Mine(pygame.sprite.Sprite):
     def range_check(self, screen):
         self.range_circle = pygame.draw.circle(screen, (255, 0, 0), self.rect.center, self.range)
 
-    def update_target():
-        pass
+    def update_target(self):
+        if self.team1_progress == 100:
+            self.team = 1
+        elif self.team2_progress == 100:
+            self.team = 2
 
     def regenerate(self):
         if self.shields < 1000:
             self.shields += self.regeneration_rate
 
     def get_range(self, target, group):
-        pass
+        if self.range_circle.collidepoint(target.rect.center):
+            if target.team != self.team:
+                if target.team == 1:
+                    self.team1_progress += 1
+                    self.team2_progress -= 1
+                if target.team == 2:
+                    self.team2_progress += 1
+                    self.team1_progress -= 1
+
+                self.team_changed = True
+            self.update_target()
+        
+        
+
 
     def mark(self, screen):
         pygame.draw.rect(screen, (255, 0, 0), self.rect, 2)
 
     def draw_healthbar(self, screen):
+        pygame.draw.rect(screen, (0, 255, 0), (self.rect.centerx - 50, self.rect.centery - 200, self.team1_progress, 10))
+        pygame.draw.rect(screen, (255, 0, 0), (self.rect.centerx - 50, self.rect.centery - 100, self.team2_progress, 10))
+        print(self.team1_progress, self.team2_progress)
+
         pygame.draw.rect(screen, (0, 0, 255), (self.rect.centerx - 50, self.rect.centery - 61, self.shields *0.01, 3))
         pygame.draw.rect(screen, (0, 255, 0), (self.rect.centerx - 50, self.rect.centery - 58, self.hull* 0.01, 3))
-
+       
 
     def update(self, offset):
         self.rect.centerx = self.rect.centerx + offset[0]
