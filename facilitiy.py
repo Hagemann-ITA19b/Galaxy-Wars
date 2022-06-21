@@ -5,7 +5,7 @@ from turrets import *
 from gui import *
 
 class Mine(pygame.sprite.Sprite):
-    def __init__(self, filename, team, x, y):
+    def __init__(self, filename, team, x, y, income):
         super().__init__()
         self.size = (300,300)
         self.original_image = pygame.image.load(os.path.join(Settings.path_mine, filename)).convert_alpha()
@@ -31,7 +31,7 @@ class Mine(pygame.sprite.Sprite):
 
         self.team_changed = False
 
-        self.income = 20000
+        self.income = income
 
         #for animation
         self.images = []

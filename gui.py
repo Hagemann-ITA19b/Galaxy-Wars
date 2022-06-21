@@ -324,6 +324,7 @@ class GUI():
 
     def draw(self, screen):
         self.team1.update()
+        self.team2.update()
         self.build_ship()
         self.animate(screen)
         self.update_pos()

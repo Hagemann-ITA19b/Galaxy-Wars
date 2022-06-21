@@ -14,4 +14,5 @@ class Economy():
 
     def update(self):
         self.budget += self.income + self.additional_income
+        print(self.additional_income, self.team)
 

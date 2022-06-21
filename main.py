@@ -67,7 +67,7 @@ class Game(object):
 
         #add mines to the game
         self.mines = pygame.sprite.Group()
-        self.mines.add(Mine("mine1.png", 1, 1500, 1500))
+        self.mines.add(Mine("mine1.png", 0, 1500, 1500, 2))
         self.ships.add(self.mines)        
         
         #camera setup
@@ -135,9 +135,6 @@ class Game(object):
             self.watch_for_events()
             self.update()
             self.draw()
-            for mine in self.mines:
-                print(mine.team, "!", mine.income)
-            print(self.ui.team1.additional_income)
         pygame.quit()       
 
     def watch_for_events(self):
@@ -209,6 +206,7 @@ class Game(object):
         for ship in self.ships:
             if ship.team == 1:
                 self.team1.add(ship)
+            #elif ship.team == 2:
             else:
                 self.team2.add(ship)
         
