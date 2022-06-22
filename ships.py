@@ -237,6 +237,18 @@ class Assault(Ship):
     def speed_up(self):
         self.speed += 1
 
+class Conqueror(Ship):
+    def __init__(self, filename, team):
+        super().__init__(filename, team)
+        self.size = (150,150)
+        self.speed = 1
+        self.name = "conqueror"
+        self.path = Settings.path_conqueror
+        for i in range(3):
+            bitmap = pygame.image.load(os.path.join(self.path, f"conqueror{i+1}"))
+            scaled = pygame.transform.scale(bitmap, self.size)
+            self.images.append(scaled)
+            
 class Dreadnought(Ship):
     def __init__(self, filename, team):
         super().__init__(filename, team)
