@@ -80,7 +80,7 @@ class Mine(pygame.sprite.Sprite):
 
     def get_range(self, target, group):
         if self.range_circle.collidepoint(target.rect.center):
-            if target.team != self.team:
+            if target.team != self.team and target.name == "conqueror":
                 if target.team == 1:
                     self.team1_progress += 1
                     self.team2_progress -= 1
