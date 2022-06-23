@@ -200,8 +200,6 @@ class Game(object):
                 self.won = True
                 self.running = False
 
-
-
     def pick_team(self):
         for ship in self.ships:
             if ship.team == 1:
