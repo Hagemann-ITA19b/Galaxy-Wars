@@ -81,6 +81,7 @@ class Game(object):
 
         #menu setup
         self.main_menu = True
+        self.menus = Menu(self.screen)
 
 
 
@@ -138,7 +139,7 @@ class Game(object):
         while self.running:
             self.clock.tick(60)     
             if self.main_menu == True:
-                main(self)
+                self.menus.main()
             elif self.main_menu == False:      
                 self.watch_for_events()
                 self.update()
