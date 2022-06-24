@@ -5,6 +5,7 @@ from settings import Settings
 from ships import Carrier, Assault, Dreadnought
 from starfighters import Starfighter
 from camera import *
+from menu import *
 from gui import *
 from logic import *
 from minimap import *
@@ -78,6 +79,10 @@ class Game(object):
         self.minimap_rect = pygame.Rect(40, self.screen.get_size()[1] -360, 320, 320)
         self.map_size = (self.screen.get_size()[0], self.screen.get_size()[1])
 
+        #menu setup
+        self.main_menu = True
+
+
 
     def update_team(self):
         for mine in self.mines:
@@ -131,10 +136,13 @@ class Game(object):
 
     def run(self):
         while self.running:
-            self.clock.tick(60)           
-            self.watch_for_events()
-            self.update()
-            self.draw()
+            self.clock.tick(60)     
+            if self.main_menu == True:
+                main(self)
+            elif self.main_menu == False:      
+                self.watch_for_events()
+                self.update()
+                self.draw()
         pygame.quit()       
 
     def watch_for_events(self):
@@ -218,8 +226,7 @@ class Game(object):
             ship.update(self.offset)
             if ship.stored_fighters > 0:
                 self.ships.add(Starfighter("starfighter.png", ship.team))
-                ship.stored_fighters -= 1
-
+                ship.stored_fighters -= 1 
 
     def draw(self):
         mouse_control(self)
