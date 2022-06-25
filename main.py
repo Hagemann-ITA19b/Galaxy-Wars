@@ -133,12 +133,19 @@ class Game(object):
             self.selecting = False
             self.recting = pygame.Rect(0, 0, 0, 0)
 
+    def check_windowstate(self):
+        if self.menus.main_menu == False:
+            self.main_menu = False
+        if self.menus.running == False:
+            self.running = False
+
 
 
     def run(self):
         while self.running:
             self.clock.tick(60)     
             if self.main_menu == True:
+                self.check_windowstate()
                 self.menus.main()
             elif self.main_menu == False:      
                 self.watch_for_events()

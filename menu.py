@@ -11,6 +11,8 @@ class Menu():
         self.mb = False
 
         self.screen = screen
+        self.running = True
+        self.main_menu = True
 
     def watch_for_events(self):
         self.mouse = pygame.mouse.get_pos()
