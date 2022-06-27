@@ -6,6 +6,7 @@ class Menu():
     def __init__(self, screen):
         self.start_button = pygame.image.load(os.path.join(Settings.path_ui, "start_button.png")).convert_alpha()
         self.start_rect = self.start_button.get_rect()
+        self.start_rect.center = Settings.window_width / 2, Settings.window_height / 2
 
         self.mouse = pygame.mouse.get_pos()
         self.mb = False
@@ -29,8 +30,11 @@ class Menu():
         self.watch_for_events()
         self.screen.fill((0, 0, 0))
         if self.start_rect.collidepoint(self.mouse):
+            self.start_button = pygame.image.load(os.path.join(Settings.path_ui, "start_button_hover.png")).convert_alpha()
             if self.mb == True:
                 self.main_menu = False
+        else:
+            self.start_button = pygame.image.load(os.path.join(Settings.path_ui, "start_button.png")).convert_alpha()
 
         self.screen.blit(self.start_button,self.start_rect)
         pygame.display.flip()
