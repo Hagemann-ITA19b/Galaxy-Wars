@@ -58,6 +58,12 @@ class Menu():
 
         self.star1 = Star("galaxy", 1500, 200)
 
+        #for bg animation
+        self.clock_time = pygame.time.get_ticks()
+        self.anitime = 90
+        self.dust_up = False
+        self.nebula_up = False
+
 
 
     def watch_for_events(self):
@@ -72,12 +78,27 @@ class Menu():
                 self.mb = False
 
     def updown(self):
-         #self.dust_rect.centery <
+        if self.dust_rect.top == 10:
+            self.dust_up = True
+        elif self.dust_rect.top == 0:
+            self.dust_up = False
 
+        if self.nebula_rect.top == -10:
+            self.nebula_up = True
+        elif self.nebula_rect.top == 0:
+            self.nebula_up = False
 
+        if pygame.time.get_ticks() > self.clock_time:
+            self.clock_time = pygame.time.get_ticks() + self.anitime
+            if not self.dust_up:
+                self.dust_rect.centery += 1
+            else:
+                self.dust_rect.centery -= 1
 
-            self.dust_rect.centery += 1
- 
+            if not self.nebula_up:
+                self.nebula_rect.centery -= 1
+            else:
+                self.nebula_rect.centery += 1
 
     def main(self):
         self.updown()
