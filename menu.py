@@ -38,6 +38,9 @@ class Menu():
         self.start_rect = self.start_button.get_rect()
         self.start_rect.center = Settings.window_width / 2, Settings.window_height / 2
 
+        self.stars = pygame.image.load(os.path.join(Settings.path_bg, "stars.png")).convert_alpha()
+        self.stars_rect = self.stars.get_rect()
+
         self.dust = pygame.image.load(os.path.join(Settings.path_bg, "dust.png")).convert_alpha()
         self.dust_rect = self.dust.get_rect()
 
@@ -105,8 +108,10 @@ class Menu():
         self.watch_for_events()
         #self.screen.blit(self.bg,self.bg_rect)
         self.screen.fill((0,0,0))
+        self.screen.blit(self.stars, self.stars_rect)
         self.screen.blit(self.dust, self.dust_rect)
         self.screen.blit(self.nebula, self.nebula_rect)
+        
         
         title = self.pixelfont.render("Galaxy Wars", True, (0, 0, 255))
         title_rect = title.get_rect()
