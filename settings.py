@@ -16,6 +16,7 @@ class Settings(object):
     path_dreadnought = os.path.join(path_ships, "dreadnought")
     path_spacestation = os.path.join(path_file, "spacestations")
     path_mine = os.path.join(path_file, "mine")
+    path_font = os.path.join(path_ui, "pixelfont")
     turret_size = (10,10)
     bullet_size = (10, 10)
     starfighter_size = (30, 30)
