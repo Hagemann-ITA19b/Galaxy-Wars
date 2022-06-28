@@ -18,7 +18,6 @@ class Background():
         self.image = pygame.image.load(os.path.join(Settings.path_ui, filename)).convert()
         self.rect = self.image.get_rect()
 
-
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 

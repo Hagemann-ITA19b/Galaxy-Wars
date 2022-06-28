@@ -17,6 +17,7 @@ class Settings(object):
     path_spacestation = os.path.join(path_file, "spacestations")
     path_mine = os.path.join(path_file, "mine")
     path_font = os.path.join(path_ui, "pixelfont")
+    path_bg = os.path.join(path_file, "bg_assets")
     turret_size = (10,10)
     bullet_size = (10, 10)
     starfighter_size = (30, 30)
