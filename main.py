@@ -139,8 +139,6 @@ class Game(object):
         if self.menus.running == False:
             self.running = False
 
-
-
     def run(self):
         while self.running:
             self.clock.tick(60)     
