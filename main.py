@@ -81,6 +81,7 @@ class Game(object):
         #menu setup
         self.main_menu = True
         self.menus = Menu(self.screen)
+        self.end = False
 
 
 
@@ -146,10 +147,16 @@ class Game(object):
             if self.main_menu == True:
                 self.check_windowstate()
                 self.menus.main()
-            elif self.main_menu == False:      
+            elif self.main_menu == False and self.end == False:      
                 self.watch_for_events()
                 self.update()
                 self.draw()
+            elif self.end == True and self.won == False:
+                self.check_windowstate()
+                self.menus.defeat()
+            elif self.end == True and self.won == True:
+                self.check_windowstate()
+                self.menus.win()
         pygame.quit()       
 
     def watch_for_events(self):
@@ -210,10 +217,10 @@ class Game(object):
         for station in self.stations:
             if station.destroyed == True and station.team == 1:
                 self.won = False
-                self.running = False
+                self.end = True
             elif station.destroyed == True and station.team == 2:
                 self.won = True
-                self.running = False
+                self.end = True
 
     def pick_team(self):
         for ship in self.ships:
