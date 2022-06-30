@@ -66,6 +66,9 @@ class GUI():
         self.team1 = Economy(1, 50, 1)
         self.team2 = Economy(2, 50, 1)
 
+        #font
+        self.font = pygame.font.Font(os.path.join(Settings.path_font, "ChillPixels-Matrix.otf"), 30)
+
 
     def animate(self,screen):
             if pygame.time.get_ticks() > self.clock_time:
@@ -78,18 +81,16 @@ class GUI():
         
 
     def panel_build(self, screen):
-        Font = pygame.font.SysFont("comicsansms", 30)
-
         #for the build panel buttons
-        build_assault = Font.render("assault" + " " +str(self.team1.assault_cost)+"$", True, (0, 0, 0))
+        build_assault = self.font.render("assault" + " " +str(self.team1.assault_cost)+"$", True, (0, 0, 0))
         build_assault_rect = build_assault.get_rect()
         build_assault_rect.center = (self.build_panel_rect.centerx, self.build_panel_rect.centery)
 
-        build_carrier = Font.render("carrier" + " " + str(self.team1.carrier_cost)+"$", True, (0, 0, 0))
+        build_carrier = self.font.render("carrier" + " " + str(self.team1.carrier_cost)+"$", True, (0, 0, 0))
         build_carrier_rect = build_carrier.get_rect()
         build_carrier_rect.center = (self.build_panel_rect.centerx, self.build_panel_rect.centery + 50)
 
-        build_dreadnought = Font.render("dreadnought" + " " + str(self.team1.dreadnought_cost)+"$", True, (0, 0, 0))
+        build_dreadnought = self.font.render("dreadnought" + " " + str(self.team1.dreadnought_cost)+"$", True, (0, 0, 0))
         build_dreadnought_rect = build_dreadnought.get_rect()
         build_dreadnought_rect.center = (self.build_panel_rect.centerx, self.build_panel_rect.centery + 100)
 
@@ -102,7 +103,7 @@ class GUI():
         #logic for the buttons
         
         if build_assault_rect.collidepoint(self.mouse):
-            build_assault = Font.render("assault" + " " + str(self.team1.assault_cost)+ "$", True, (255, 255, 255))
+            build_assault = self.font.render("assault" + " " + str(self.team1.assault_cost)+ "$", True, (255, 255, 255))
             screen.blit(build_assault, build_assault_rect)
             if self.click == True and self.team1.budget > self.team1.assault_cost:
                 if len(self.build_queue) < 5:
@@ -114,7 +115,7 @@ class GUI():
                 self.click = False
         
         if build_carrier_rect.collidepoint(self.mouse):
-            build_carrier = Font.render("carrier" + " " + str(self.team1.carrier_cost) + "$", True, (255, 255, 255))
+            build_carrier = self.font.render("carrier" + " " + str(self.team1.carrier_cost) + "$", True, (255, 255, 255))
             screen.blit(build_carrier, build_carrier_rect)
             if self.click == True and self.team1.budget > self.team1.carrier_cost:
                 if len(self.build_queue) < 5:
@@ -126,7 +127,7 @@ class GUI():
                 self.click = False
 
         if build_dreadnought_rect.collidepoint(self.mouse):
-            build_dreadnought = Font.render("dreadnought" + " " + str(self.team1.dreadnought_cost) + "$", True, (255, 255, 255))
+            build_dreadnought = self.font.render("dreadnought" + " " + str(self.team1.dreadnought_cost) + "$", True, (255, 255, 255))
             screen.blit(build_dreadnought, build_dreadnought_rect)
             if self.click == True and self.team1.budget > self.team1.dreadnought_cost:
                 if len(self.build_queue) < 5:
@@ -144,18 +145,16 @@ class GUI():
 
 
     def panel_call(self, screen):
-        Font = pygame.font.SysFont("comicsansms", 30)
-
         #for the call panel buttons
-        assault = Font.render("Assault" + " " + str(self.assault_count)+"x", True, (0, 0, 0))
+        assault = self.font.render("Assault" + " " + str(self.assault_count)+"x", True, (0, 0, 0))
         assault_rect = assault.get_rect()
         assault_rect.center = (self.call_panel_rect.centerx, self.call_panel_rect.centery)
 
-        carrier = Font.render("Carrier"+ " " + str(self.carrier_count)+"x", True, (0, 0, 0))
+        carrier = self.font.render("Carrier"+ " " + str(self.carrier_count)+"x", True, (0, 0, 0))
         carrier_rect = carrier.get_rect()
         carrier_rect.center = (self.call_panel_rect.centerx, self.call_panel_rect.centery + 50)
 
-        dreadnought = Font.render("dreadnought" + " " + str(self.dreadnought_count)+"x", True, (0, 0, 0))
+        dreadnought = self.font.render("dreadnought" + " " + str(self.dreadnought_count)+"x", True, (0, 0, 0))
         dreadnought_rect = dreadnought.get_rect()
         dreadnought_rect.center = (self.call_panel_rect.centerx, self.call_panel_rect.centery + 100)
 
@@ -166,7 +165,7 @@ class GUI():
 
         #logic for the buttons
         if assault_rect.collidepoint(self.mouse) and self.assault_count > 0:
-            assault = Font.render("Assault", True, (255, 255, 255))
+            assault = self.font.render("Assault", True, (255, 255, 255))
             screen.blit(assault, assault_rect)
             if self.click == True:
                 self.call_assault = True
@@ -175,7 +174,7 @@ class GUI():
 
         
         if carrier_rect.collidepoint(self.mouse) and self.carrier_count > 0:
-            carrier = Font.render("Carrier", True, (255, 255, 255))
+            carrier = self.font.render("Carrier", True, (255, 255, 255))
             screen.blit(carrier, carrier_rect)
             if self.click == True:
                 self.call_carrier = True
@@ -183,7 +182,7 @@ class GUI():
                 self.call_dreadnought = False
 
         if dreadnought_rect.collidepoint(self.mouse) and self.dreadnought_count > 0:
-            dreadnought = Font.render("Dreadnought", True, (255, 255, 255))
+            dreadnought = self.font.render("Dreadnought", True, (255, 255, 255))
             screen.blit(dreadnought, dreadnought_rect)
             if self.click == True:
                 self.call_dreadnought = True
@@ -291,20 +290,18 @@ class GUI():
 
     def display_build_queue(self, screen):
         if self.constructing == True:
-            Font = pygame.font.SysFont("comicsansms", 30)
-            assault = Font.render(str(self.build_queue), True, (255, 255, 255))
+            assault = self.font.render(str(self.build_queue), True, (255, 255, 255))
             screen.blit(assault, (20, Settings.window_height - 450))
             pygame.draw.rect(screen, (255,0,0), pygame.Rect(10, 700, self.construction_time * self.multiplier, 10))
 
             if self.queue_full == True:
-                queue_full = Font.render("Queue is full", True, (255, 100, 0))
+                queue_full = self.font.render("Queue is full", True, (255, 100, 0))
                 screen.blit(queue_full, (900, Settings.window_height - 450))
                 if len(self.build_queue) < 5:
                     self.queue_full = False
 
     def display_budget(self, screen):
-        Font = pygame.font.SysFont("comicsansms", 30)
-        budget = Font.render("Budget: " + str(self.team1.budget), True, (0, 255, 255))
+        budget = self.font.render("Budget: " + str(self.team1.budget), True, (0, 255, 255))
         screen.blit(budget, (20, Settings.window_height - 600))
 
 

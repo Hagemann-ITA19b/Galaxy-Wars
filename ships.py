@@ -214,7 +214,7 @@ class Carrier(Ship):
         self.path = Settings.path_carrier
         for i in range(4):
             bitmap = pygame.image.load(os.path.join(
-                Settings.path_carrier, f"carrier{i}.png"))
+                Settings.path_carrier, f"carrier{i}.png")).convert_alpha()
             scaled = pygame.transform.scale(bitmap,self.size)
             self.images.append(scaled)
 
@@ -230,7 +230,7 @@ class Assault(Ship):
         self.path = Settings.path_assault
         for i in range(4):
             bitmap = pygame.image.load(os.path.join(
-                Settings.path_assault, f"assault{i}.png"))
+                Settings.path_assault, f"assault{i}.png")).convert_alpha()
             scaled = pygame.transform.scale(bitmap,self.size)
             self.images.append(scaled)
 
@@ -256,7 +256,7 @@ class Dreadnought(Ship):
         self.speed = 1
         self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
         self.turrets.add(Breacher(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
-        self.range = 500
+        self.range = 2000
         self.hull = 10000
         self.shields = 10000
         self.name = "dreadnought"
@@ -264,6 +264,6 @@ class Dreadnought(Ship):
         self.images.clear()
         for i in range(3):
             bitmap = pygame.image.load(os.path.join(
-                Settings.path_dreadnought, f"dreadnought{i}.png"))
+                Settings.path_dreadnought, f"dreadnought{i}.png")).convert_alpha()
             scaled = pygame.transform.scale(bitmap,self.size)
             self.images.append(scaled)
