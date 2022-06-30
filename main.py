@@ -15,15 +15,36 @@ from facilitiy import *
 class Background():
     def __init__(self, filename) -> None:
         super().__init__()
-        self.image = pygame.image.load(os.path.join(Settings.path_ui, filename)).convert()
+        self.image = pygame.image.load(os.path.join(Settings.path_bg, filename)).convert()
         self.rect = self.image.get_rect()
+        #animation
+        self.images = []
+        self.imageindex = 0
+        self.clock_time = pygame.time.get_ticks()
+        self.animation_time = 100
+        self.images.append(self.image)
+
+        for i in range(29):
+             bitmap = pygame.image.load(os.path.join(
+                 Settings.path_bg, f"bg{i+1}.png")).convert()
+             self.images.append(bitmap)
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 
     def update(self, offset):
+        self.animate()
         self.rect.centerx = self.rect.centerx + offset[0]
         self.rect.centery = self.rect.centery - offset[1]
+
+
+    def animate(self):
+        if pygame.time.get_ticks() > self.clock_time:
+            self.clock_time = pygame.time.get_ticks() + self.animation_time
+            self.imageindex += 1
+            if self.imageindex >= len(self.images):
+                self.imageindex = 0
+            self.image = self.images[self.imageindex]
 
 class Cursor():
     def __init__(self, filename) -> None:
@@ -43,10 +64,11 @@ class Game(object):
         super().__init__()
         pygame.init()
         self.screen = pygame.display.set_mode((Settings.window_width, Settings.window_height))
+        self.screen_rect = (0,0,1920,1080)
         pygame.display.set_caption(Settings.title)
         self.clock = pygame.time.Clock()
         self.screen.fill((0, 0, 0))
-        self.background = Background("background.png")
+        self.background = Background("bg1.png")
         self.ui = GUI()
         self.match = Match(1)
         self.ships = pygame.sprite.Group()
@@ -141,7 +163,8 @@ class Game(object):
 
     def run(self):
         while self.running:
-            self.clock.tick(60)     
+            self.clock.tick(60) 
+            print(self.clock.get_fps())    
             if self.main_menu == True:
                 self.check_windowstate()
                 self.menus.main()
@@ -253,7 +276,7 @@ class Game(object):
         self.ui.draw(self.screen)
         self.cursor.draw(self.screen)
         radar(self)
-        pygame.display.flip()
+        pygame.display.update(self.screen_rect)
 
 if __name__ == "__main__":
     os.environ["SDL_VIDEO_WINDOW_POS"] = "0, 0"
