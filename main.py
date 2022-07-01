@@ -1,6 +1,8 @@
+import shutil
 import pygame
 import os
 from random import randint
+from enemy import Enemy
 from settings import Settings
 from ships import Carrier, Assault, Dreadnought
 from starfighters import Starfighter
@@ -80,6 +82,9 @@ class Game(object):
         self.recting = pygame.Rect(self.starting_point[0], self.starting_point[1], 0, 0)
         self.team1 = pygame.sprite.Group()
         self.team2 = pygame.sprite.Group()
+
+        #enemy
+        self.enemy = Enemy()
         
         #add 2 stations to the game
         self.stations = pygame.sprite.Group()
@@ -164,7 +169,7 @@ class Game(object):
     def run(self):
         while self.running:
             self.clock.tick(60) 
-            print(self.clock.get_fps())    
+            #print(self.clock.get_fps())    
             if self.main_menu == True:
                 self.check_windowstate()
                 self.menus.main()
@@ -204,20 +209,39 @@ class Game(object):
             elif event.type == pygame.QUIT:
                 self.running = False
 
+    def enemy_spawn(self):
+        for st in self.stations:
+            if st.team == 2:
+                pos = st.rect.center
+        if self.enemy.spawn == True:
+            self.ships.add(Assault("assault.png",2, pos))
+            self.pick_team()
+            self.enemy.spawn == False
+
+        for ship in self.team2:
+            if ship not in self.stations:
+                if ship not in self.mines:
+                    
+                    ship.waypoint_x = 0
+                    ship.waypoint_y = 0
+                    ship.create_waypoint(self.screen)
+                    ship.rotated = True
+
 
     def spawn(self):
+        self.mouse = pygame.mouse.get_pos()
         self.click = pygame.mouse.get_pressed()
         if self.click[2] == 1:
             if self.ui.call_assault == True:
-                    self.ships.add(Assault("assault.png",1))
+                    self.ships.add(Assault("assault.png",1,self.mouse))
                     self.ui.call_assault = False
                     self.ui.assault_count -= 1
             if self.ui.call_carrier == True:
-                    self.ships.add(Carrier("carrier.png",2))
+                    self.ships.add(Carrier("carrier.png",2,self.mouse))
                     self.ui.call_carrier = False
                     self.ui.carrier_count -= 1
             if self.ui.call_dreadnought == True:
-                    self.ships.add(Dreadnought("dreadnought.png",2))
+                    self.ships.add(Dreadnought("dreadnought.png",2, self.mouse))
                     self.ui.call_dreadnought = False
                     self.ui.dreadnought_count -= 1
             self.pick_team()
@@ -252,6 +276,8 @@ class Game(object):
                 self.team2.add(ship)
         
     def update(self):
+        self.enemy_spawn()
+        self.enemy.update()
         self.update_team()
         self.check_status()
         self.spawn()

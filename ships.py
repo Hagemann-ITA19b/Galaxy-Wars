@@ -5,7 +5,7 @@ from turrets import *
 from random import randint
 
 class Ship(pygame.sprite.Sprite):
-    def __init__(self, filename, team):
+    def __init__(self, filename, team, xy):
         super().__init__()
         self.size = (150,150)
         self.original_image = pygame.image.load(os.path.join(Settings.path_ships, filename)).convert_alpha()
@@ -13,7 +13,7 @@ class Ship(pygame.sprite.Sprite):
         self.image = self.original_image
         self.rect = self.image.get_rect() 
         self.mouse = pygame.mouse.get_pos()
-        self.rect.center = self.mouse
+        self.rect.center = xy
         self.move = False
         self.rotated = False
         self.selected = False
@@ -204,8 +204,8 @@ class Ship(pygame.sprite.Sprite):
 #ship types  
 
 class Carrier(Ship):
-    def __init__(self, filename, team):
-        super().__init__(filename, team)
+    def __init__(self, filename, team, xy):
+        super().__init__(filename, team, xy)
         self.size = (150,150)
         self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
         self.speed = 2
@@ -219,8 +219,8 @@ class Carrier(Ship):
             self.images.append(scaled)
 
 class Assault(Ship):
-    def __init__(self, filename, team):
-        super().__init__(filename, team)
+    def __init__(self, filename, team, xy):
+        super().__init__(filename, team, xy)
         self.size = (150,150)
         self.speed = 2
         self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
@@ -238,8 +238,8 @@ class Assault(Ship):
         self.speed += 1
 
 class Conqueror(Ship):
-    def __init__(self, filename, team):
-        super().__init__(filename, team)
+    def __init__(self, filename, team, xy):
+        super().__init__(filename, team, xy)
         self.size = (150,150)
         self.speed = 1
         self.name = "conqueror"
@@ -250,8 +250,8 @@ class Conqueror(Ship):
             self.images.append(scaled)
             
 class Dreadnought(Ship):
-    def __init__(self, filename, team):
-        super().__init__(filename, team)
+    def __init__(self, filename, team, xy):
+        super().__init__(filename, team, xy)
         self.size = (500, 1000)
         self.speed = 1
         self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))

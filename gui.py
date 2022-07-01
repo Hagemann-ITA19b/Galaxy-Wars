@@ -64,7 +64,6 @@ class GUI():
 
         #finace
         self.team1 = Economy(1, 50, 1)
-        self.team2 = Economy(2, 50, 1)
 
         #font
         self.font = pygame.font.Font(os.path.join(Settings.path_font, "ChillPixels-Matrix.otf"), 30)
@@ -321,7 +320,6 @@ class GUI():
 
     def draw(self, screen):
         self.team1.update()
-        self.team2.update()
         self.build_ship()
         self.animate(screen)
         self.update_pos()
