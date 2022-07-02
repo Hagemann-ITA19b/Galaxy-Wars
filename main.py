@@ -221,11 +221,16 @@ class Game(object):
         for ship in self.team2:
             if ship not in self.stations:
                 if ship not in self.mines:
-                    
-                    ship.waypoint_x = 0
-                    ship.waypoint_y = 0
-                    ship.create_waypoint(self.screen)
-                    ship.rotated = True
+                    pos = pygame.math.Vector2(ship.rect.centerx, ship.rect.centery)
+                    enemy = min([e for e in self.team1], key=lambda e: pos.distance_to(pygame.math.Vector2(e.rect.centerx, e.rect.centery)))
+                    print(enemy.rect.center)
+                    print("prop")
+
+                    # ship.waypoint_x = 0
+                    # ship.waypoint_y = 0
+                    # ship.create_waypoint(self.screen)
+                    # ship.rotated = True
+
 
 
     def spawn(self):
@@ -237,11 +242,11 @@ class Game(object):
                     self.ui.call_assault = False
                     self.ui.assault_count -= 1
             if self.ui.call_carrier == True:
-                    self.ships.add(Carrier("carrier.png",2,self.mouse))
+                    self.ships.add(Carrier("carrier.png",1,self.mouse))
                     self.ui.call_carrier = False
                     self.ui.carrier_count -= 1
             if self.ui.call_dreadnought == True:
-                    self.ships.add(Dreadnought("dreadnought.png",2, self.mouse))
+                    self.ships.add(Dreadnought("dreadnought.png",1, self.mouse))
                     self.ui.call_dreadnought = False
                     self.ui.dreadnought_count -= 1
             self.pick_team()
