@@ -69,6 +69,7 @@ class Game(object):
         self.screen_rect = (0,0,1920,1080)
         pygame.display.set_caption(Settings.title)
         self.clock = pygame.time.Clock()
+        self.clock_time = pygame.time.get_ticks()
         self.screen.fill((0, 0, 0))
         self.background = Background("bg1.png")
         self.ui = GUI()
@@ -212,7 +213,7 @@ class Game(object):
     def enemy_spawn(self):
         for st in self.stations:
             if st.team == 2:
-                pos = st.rect.center
+                pos = st.rect.centerx + randint(-100,300), st.rect.centery + randint(-100,300)
         if self.enemy.spawn == True:
             self.ships.add(Assault("assault.png",2, pos))
             self.pick_team()
@@ -223,15 +224,11 @@ class Game(object):
                 if ship not in self.mines:
                     pos = pygame.math.Vector2(ship.rect.centerx, ship.rect.centery)
                     enemy = min([e for e in self.team1], key=lambda e: pos.distance_to(pygame.math.Vector2(e.rect.centerx, e.rect.centery)))
-                    print(enemy.rect.center)
-                    print("prop")
 
-                    # ship.waypoint_x = 0
-                    # ship.waypoint_y = 0
-                    # ship.create_waypoint(self.screen)
-                    # ship.rotated = True
-
-
+                    ship.waypoint_x = enemy.rect.centerx + ship.distance_x
+                    ship.waypoint_y = enemy.rect.centery + ship.distance_y
+                    ship.create_waypoint(self.screen)
+                    ship.rotated = True
 
     def spawn(self):
         self.mouse = pygame.mouse.get_pos()
@@ -250,9 +247,6 @@ class Game(object):
                     self.ui.call_dreadnought = False
                     self.ui.dreadnought_count -= 1
             self.pick_team()
-
-
-        
 
     def shoot_in_range(self):
         for ship in self.ships:
@@ -276,11 +270,11 @@ class Game(object):
         for ship in self.ships:
             if ship.team == 1:
                 self.team1.add(ship)
-            #elif ship.team == 2:
             else:
                 self.team2.add(ship)
         
     def update(self):
+        print(self.clock.get_fps())
         self.enemy_spawn()
         self.enemy.update()
         self.update_team()

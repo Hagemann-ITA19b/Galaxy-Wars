@@ -1,3 +1,4 @@
+from math import fabs
 import pygame
 import os
 from settings import Settings
@@ -22,6 +23,8 @@ class Ship(pygame.sprite.Sprite):
         self.turrets = pygame.sprite.Group()
         self.team = team
         self.range = 500
+        self.distance_x = randint(200, self.range)
+        self.distance_y = randint(-100, self.range)
         self.aiming = False
         self.hull = 1000
         self.shields = 1000
