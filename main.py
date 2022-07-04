@@ -4,7 +4,7 @@ import os
 from random import randint
 from enemy import Enemy
 from settings import Settings
-from ships import Carrier, Assault, Dreadnought
+from ships import Carrier, Assault, Dreadnought, Frigate
 from starfighters import Starfighter
 from camera import *
 from menu import *
@@ -215,7 +215,9 @@ class Game(object):
             if st.team == 2:
                 pos = st.rect.centerx + randint(-100,300), st.rect.centery + randint(-100,300)
         if self.enemy.spawn == True:
-            if self.enemy.ship == 1:
+            if self.enemy.ship == 0:
+                self.ships.add(Frigate("frigate.png",2,pos))
+            elif self.enemy.ship == 1:
                 self.ships.add(Assault("assault.png",2, pos))
             elif self.enemy.ship == 2:
                 self.ships.add(Carrier("carrier.png",2, pos))

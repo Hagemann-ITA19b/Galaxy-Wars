@@ -270,3 +270,19 @@ class Dreadnought(Ship):
                 Settings.path_dreadnought, f"dreadnought{i}.png")).convert_alpha()
             scaled = pygame.transform.scale(bitmap,self.size)
             self.images.append(scaled)
+
+class Frigate(Ship):
+    def __init__(self, filename, team, xy):
+        super().__init__(filename, team, xy)
+        self.size = (150,150)
+        self.speed = 2
+        self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
+        self.turrets.add(Breacher(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
+        self.range = 500
+        self.name = "frigate"
+        self.path = Settings.path_frigate
+        for i in range(3):
+            bitmap = pygame.image.load(os.path.join(
+                Settings.path_frigate, f"frigate{i}.png")).convert_alpha()
+            scaled = pygame.transform.scale(bitmap,self.size)
+            self.images.append(scaled)
