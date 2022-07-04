@@ -216,11 +216,17 @@ class Game(object):
                 pos = st.rect.centerx + randint(-100,300), st.rect.centery + randint(-100,300)
         if self.enemy.spawn == True:
             if self.enemy.ship == 0:
-                self.ships.add(Frigate("frigate.png",2,pos))
+                if self.enemy.eco.budget >= self.enemy.eco.frigate_cost:
+                    self.ships.add(Frigate("frigate.png",2,pos))
+                    self.enemy.eco.budget -= self.enemy.eco.frigate_cost
             elif self.enemy.ship == 1:
-                self.ships.add(Assault("assault.png",2, pos))
+                if self.enemy.eco.budget >= self.enemy.eco.assault_cost:
+                    self.ships.add(Assault("assault.png",2, pos))
+                    self.enemy.eco.budget -= self.enemy.eco.assault_cost
             elif self.enemy.ship == 2:
-                self.ships.add(Carrier("carrier.png",2, pos))
+                if self.enemy.eco.budget >= self.enemy.eco.carrier_cost:
+                    self.ships.add(Carrier("carrier.png",2, pos))
+                    self.enemy.eco.budget -= self.enemy.eco.carrier_cost
             self.pick_team()
             self.enemy.spawn == False
 
@@ -279,7 +285,7 @@ class Game(object):
                 self.team2.add(ship)
         
     def update(self):
-        print(self.clock.get_fps())
+       #print(self.clock.get_fps())
         self.enemy_spawn()
         self.enemy.update()
         self.update_team()
