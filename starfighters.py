@@ -25,6 +25,8 @@ class Starfighter(pygame.sprite.Sprite):
         self.turrets = pygame.sprite.Group()
         self.team = team
         self.range = 500
+        self.distance_x = randint(200, self.range)
+        self.distance_y = randint(-100, self.range)
         self.aiming = False
         self.hull = 100
         self.shields = 0

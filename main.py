@@ -215,7 +215,10 @@ class Game(object):
             if st.team == 2:
                 pos = st.rect.centerx + randint(-100,300), st.rect.centery + randint(-100,300)
         if self.enemy.spawn == True:
-            self.ships.add(Assault("assault.png",2, pos))
+            if self.enemy.ship == 1:
+                self.ships.add(Assault("assault.png",2, pos))
+            elif self.enemy.ship == 2:
+                self.ships.add(Carrier("carrier.png",2, pos))
             self.pick_team()
             self.enemy.spawn == False
 

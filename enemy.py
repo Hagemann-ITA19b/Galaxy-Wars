@@ -9,13 +9,16 @@ class Enemy():
         self.clock_time = pygame.time.get_ticks()
         self.rate = 100
         self.spawnlimit = 100
+        self.ship = None
 
     def roll(self):
         d = randint(1, 20)
         if self.spawnlimit > 0:
             if d == 1:
+                self.ship = randint(0,2)
                 self.spawn = True
                 self.spawnlimit -= 1
+                
         else:
                 self.spawn = False
 
