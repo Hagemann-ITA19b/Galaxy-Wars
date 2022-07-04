@@ -230,16 +230,21 @@ class Game(object):
             self.pick_team()
             self.enemy.spawn == False
 
-        for ship in self.team2:
-            if ship not in self.stations:
-                if ship not in self.mines:
-                    pos = pygame.math.Vector2(ship.rect.centerx, ship.rect.centery)
-                    enemy = min([e for e in self.team1], key=lambda e: pos.distance_to(pygame.math.Vector2(e.rect.centerx, e.rect.centery)))
+        if pygame.time.get_ticks() > self.clock_time:
+            self.clock_time = pygame.time.get_ticks() + 2000
+            for ship in self.team2:
+                if ship not in self.stations:
+                    if ship not in self.mines:
+                        pos = pygame.math.Vector2(ship.rect.centerx, ship.rect.centery)
+                        enemy = min([e for e in self.team1], key=lambda e: pos.distance_to(pygame.math.Vector2(e.rect.centerx, e.rect.centery)))
 
-                    ship.waypoint_x = enemy.rect.centerx + ship.distance_x
-                    ship.waypoint_y = enemy.rect.centery + ship.distance_y
-                    ship.create_waypoint(self.screen)
-                    ship.rotated = True
+                        ship.waypoint_x = enemy.rect.centerx + ship.distance_x
+                        ship.waypoint_y = enemy.rect.centery + ship.distance_y
+                        ship.create_waypoint(self.screen)
+                        ship.rotated = True
+                        if ship.rotated == True and ship.move == True:
+                            ship.move = False
+
 
     def spawn(self):
         self.mouse = pygame.mouse.get_pos()

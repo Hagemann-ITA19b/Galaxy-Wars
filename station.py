@@ -17,8 +17,8 @@ class Spacestation(pygame.sprite.Sprite):
         self.team = team
         self.range = 500
         self.aiming = False
-        self.hull = 100001234
-        self.shields = 100001234
+        self.hull = 10000
+        self.shields = 10000
         self.regeneration_rate = 1
         self.destroyed = False
         self.stored_fighters = 0
