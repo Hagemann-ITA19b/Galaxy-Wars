@@ -12,7 +12,6 @@ class Enemy():
         self.ship = None
 
     def roll(self):
-        print(self.eco.budget)
         d = randint(1, 20)
         if self.spawnlimit > 0:
             if d == 1:
