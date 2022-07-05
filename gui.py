@@ -51,13 +51,14 @@ class GUI():
 
         #count of the units
         self.assault_count = 0
-        self.support_count = 0
+        self.frigate_count = 0
         self.carrier_count = 0
         self.dreadnought_count = 0
 
         self.build_queue = []
         self.assault_time = 1000
         self.carrier_time = 500
+        self.frigate_time = 350
         self.dreadnought_time = 1000
 
         self.construction_time = 1000
@@ -67,7 +68,6 @@ class GUI():
 
         #font
         self.font = pygame.font.Font(os.path.join(Settings.path_font, "ChillPixels-Matrix.otf"), 30)
-
 
     def animate(self,screen):
             if pygame.time.get_ticks() > self.clock_time:
@@ -81,26 +81,29 @@ class GUI():
 
     def panel_build(self, screen):
         #for the build panel buttons
-        build_assault = self.font.render("assault" + " " +str(self.team1.assault_cost)+"$", True, (0, 0, 0))
+        build_assault = self.font.render("Assault" + " " +str(self.team1.assault_cost)+"$", True, (0, 0, 0))
         build_assault_rect = build_assault.get_rect()
-        build_assault_rect.center = (self.build_panel_rect.centerx, self.build_panel_rect.centery)
+        build_assault_rect.center = (self.build_panel_rect.centerx, self.build_panel_rect.centery + 100)
 
-        build_carrier = self.font.render("carrier" + " " + str(self.team1.carrier_cost)+"$", True, (0, 0, 0))
+        build_carrier = self.font.render("Carrier" + " " + str(self.team1.carrier_cost)+"$", True, (0, 0, 0))
         build_carrier_rect = build_carrier.get_rect()
         build_carrier_rect.center = (self.build_panel_rect.centerx, self.build_panel_rect.centery + 50)
 
-        build_dreadnought = self.font.render("dreadnought" + " " + str(self.team1.dreadnought_cost)+"$", True, (0, 0, 0))
+        build_dreadnought = self.font.render("Dreadnought" + " " + str(self.team1.dreadnought_cost)+"$", True, (0, 0, 0))
         build_dreadnought_rect = build_dreadnought.get_rect()
-        build_dreadnought_rect.center = (self.build_panel_rect.centerx, self.build_panel_rect.centery + 100)
+        build_dreadnought_rect.center = (self.build_panel_rect.centerx, self.build_panel_rect.centery + 150)
 
+        build_frigate = self.font.render("Frigate" + " " + str(self.team1.frigate_cost) + "$", True, (0,0,0))
+        build_frigate_rect = build_frigate.get_rect()
+        build_frigate_rect.center = (self.build_panel_rect.centerx, self.build_panel_rect.centery)
 
         #blit the buttons
+        screen.blit(build_frigate, build_frigate_rect)
         screen.blit(build_assault, build_assault_rect)
         screen.blit(build_carrier, build_carrier_rect)
         screen.blit(build_dreadnought, build_dreadnought_rect)
 
         #logic for the buttons
-        
         if build_assault_rect.collidepoint(self.mouse):
             build_assault = self.font.render("assault" + " " + str(self.team1.assault_cost)+ "$", True, (255, 255, 255))
             screen.blit(build_assault, build_assault_rect)
@@ -271,9 +274,7 @@ class GUI():
                     self.constructing = False
                     self.carrier_time = 500
 
-
                     
-
     def calculate_multiplier(self):
         if self.build_queue[0] == "assault" and self.assault_time == 1000:
                 self.construction_time = self.assault_time           
@@ -284,7 +285,6 @@ class GUI():
         elif self.build_queue[0] == "dreadnought" and self.dreadnought_time == 1000:
                 self.construction_time = self.dreadnought_time
                 self.multiplier = 1000 // self.construction_time
-        
 
 
     def display_build_queue(self, screen):
@@ -302,20 +302,6 @@ class GUI():
     def display_budget(self, screen):
         budget = self.font.render("Budget: " + str(self.team1.budget), True, (0, 255, 255))
         screen.blit(budget, (20, Settings.window_height - 600))
-
-
-
-
-
-    
-
-
-       
-        
-
-
-
-
 
 
     def draw(self, screen):

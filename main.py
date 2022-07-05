@@ -290,7 +290,7 @@ class Game(object):
                 self.team2.add(ship)
         
     def update(self):
-        print(self.clock.get_fps())
+        #print(self.clock.get_fps())
         self.enemy_spawn()
         self.enemy.update()
         self.update_team()
