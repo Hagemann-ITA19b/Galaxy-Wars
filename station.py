@@ -47,6 +47,12 @@ class Spacestation(pygame.sprite.Sprite):
         #check sprites
         self.appended_damaged = False
 
+        #for spawning
+        self.spawn_rect = pygame.Surface((500,500))  # the size of your rect
+        self.spawn_rect.set_alpha(128)                # alpha level
+        self.spawn_rect.fill((0,255,0))           # this fills the entire surface
+        
+
 
     def update_sprite(self):
         pass
@@ -75,7 +81,8 @@ class Spacestation(pygame.sprite.Sprite):
         self.range_circle = pygame.draw.circle(screen, (255, 0, 0), self.rect.center, self.range)
 
     def warp_area(self, screen):
-        self.spawn_rect = pygame.draw.rect(screen, (0,255,0),(self.rect.centerx - 250,self.rect.centery - 250,500,500))
+        screen.blit(self.spawn_rect, (self.rect.centerx - 250,self.rect.centery - 250))
+        self.spawn_area = self.spawn_rect.get_rect(center = self.rect.center)
 
     def update_target(self, target, group):
             self.shoot(target.rect.center, group)

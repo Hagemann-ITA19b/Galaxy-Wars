@@ -264,7 +264,12 @@ class Game(object):
 
     def spawn_area(self):
         if self.ui.call:
-            self.no_rect = pygame.draw.rect(self.screen, (255,0,0),(0,0,1920,1080))
+            #credits to Gustavo Giráldez
+            s = pygame.Surface((1920,1080))  # the size of your rect
+            s.set_alpha(128)                # alpha level
+            s.fill((255,0,0))           # this fills the entire surface
+            self.screen.blit(s, (0,0))    # (0,0) are the top-left coordinates
+            
             for ship in self.team1:
                 ship.warp_area(self.screen)
 
@@ -273,7 +278,7 @@ class Game(object):
         self.click = pygame.mouse.get_pressed()
         if self.click[2] == 1:
             for ship in self.team1:
-                if ship.spawn_rect.collidepoint(self.mouse):
+                if ship.spawn_area.collidepoint(self.mouse):
                     if self.ui.call_assault == True:
                             self.ships.add(Assault("assault.png",1,self.mouse))
                             self.ui.call_assault = False
