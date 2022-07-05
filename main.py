@@ -4,7 +4,7 @@ import os
 from random import randint
 from enemy import Enemy
 from settings import Settings
-from ships import Carrier, Assault, Dreadnought, Frigate
+from ships import Carrier, Assault, Conqueror, Dreadnought, Frigate
 from starfighters import Starfighter
 from camera import *
 from menu import *
@@ -121,12 +121,17 @@ class Game(object):
                     self.team1.add(mine)
                     self.ui.team1.additional_income = mine.income
                     self.team2.remove(mine)
-                    self.ui.team2.additional_income = 0
+                    #self.ui.team2.additional_income = 0
                 elif mine.team == 2:
                     self.team2.add(mine)
-                    self.ui.team2.additional_income = mine.income    
+                    #self.ui.team2.additional_income = mine.income    
                     self.team1.remove(mine)
                     self.ui.team1.additional_income = 0
+            if mine.hull <= 0:
+                mine.team = 0
+                self.ui.team1.additional_income = 0
+                self.team1.remove(mine)
+                self.team2.remove(mine)
                 mine.team_changed = False
 
     def update_cursor(self):
@@ -249,7 +254,7 @@ class Game(object):
                     if ship not in self.mines:
                         pos = pygame.math.Vector2(ship.rect.centerx, ship.rect.centery)
                         enemy = min([e for e in self.team1], key=lambda e: pos.distance_to(pygame.math.Vector2(e.rect.centerx, e.rect.centery)))
-
+                    
                         ship.waypoint_x = enemy.rect.centerx + ship.distance_x
                         ship.waypoint_y = enemy.rect.centery + ship.distance_y
                         ship.create_waypoint(self.screen)
@@ -278,6 +283,11 @@ class Game(object):
                     self.ships.add(Frigate("frigate.png",1, self.mouse))
                     self.ui.call_frigate = False
                     self.ui.frigate_count -= 1
+            if self.ui.call_conqueror == True:
+                    self.ships.add(Conqueror("conqueror.png",1, self.mouse))
+                    self.ui.call_conqueror = False
+                    self.ui.conqueror_count -= 1
+
             self.pick_team()
 
     def shoot_in_range(self):

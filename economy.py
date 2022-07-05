@@ -11,12 +11,15 @@ class Economy():
         self.level = 0
 
         #prices for ships
+        self.conqueror_cost = 200
         self.corvette_cost = 100
         self.gunship_cost = 275
         self.frigate_cost = 350
         self.assault_cost = 500
         self.carrier_cost = 400
-        self.dreadnought_cost = 600
+        self.battlecruiser_cost = 600
+        self.capital_ship_cost = 700
+        self.dreadnought_cost = 800
 
     def check_level(self):
         if self.budget >= 100:

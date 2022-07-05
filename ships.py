@@ -248,7 +248,7 @@ class Conqueror(Ship):
         self.name = "conqueror"
         self.path = Settings.path_conqueror
         for i in range(3):
-            bitmap = pygame.image.load(os.path.join(self.path, f"conqueror{i+1}"))
+            bitmap = pygame.image.load(os.path.join(self.path, f"conqueror{i+1}.png")).convert_alpha()
             scaled = pygame.transform.scale(bitmap, self.size)
             self.images.append(scaled)
             

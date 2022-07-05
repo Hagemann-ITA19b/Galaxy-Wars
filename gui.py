@@ -45,6 +45,7 @@ class GUI():
         self.click = False
 
         #for the call panel
+        self.call_conqueror = False
         self.call_frigate = False
         self.call_assault = False
         self.call_support = False
@@ -52,18 +53,21 @@ class GUI():
         self.call_dreadnought = False
 
         #count of the units
+        self.conqueror_count = 0
         self.assault_count = 0
         self.frigate_count = 0
         self.carrier_count = 0
         self.dreadnought_count = 0
 
         self.build_queue = []
+        self.conqueror_time = 350
         self.assault_time = 1000
         self.carrier_time = 500
         self.frigate_time = 350
         self.dreadnought_time = 1000
         self.construction_time = 1000
         self.multiplier = 1000 // self.construction_time
+
         #finace
         self.team1 = Economy(1, 50, 1)
 
@@ -82,6 +86,10 @@ class GUI():
 
     def panel_build(self, screen):
         #for the build panel buttons
+        build_conqueror = self.font.render("Conqueror" + " " +str(self.team1.conqueror_cost)+"$", True, (0, 0, 0))
+        build_conqueror_rect = build_conqueror.get_rect()
+        build_conqueror_rect.center = (self.build_panel_rect.centerx, self.build_panel_rect.centery - 50)
+
         build_assault = self.font.render("Assault" + " " +str(self.team1.assault_cost)+"$", True, (0, 0, 0))
         build_assault_rect = build_assault.get_rect()
         build_assault_rect.center = (self.build_panel_rect.centerx, self.build_panel_rect.centery + 100)
@@ -99,12 +107,25 @@ class GUI():
         build_frigate_rect.center = (self.build_panel_rect.centerx, self.build_panel_rect.centery)
 
         #blit the buttons
+        screen.blit(build_conqueror, build_conqueror_rect)
         screen.blit(build_frigate, build_frigate_rect)
         screen.blit(build_assault, build_assault_rect)
         screen.blit(build_carrier, build_carrier_rect)
         screen.blit(build_dreadnought, build_dreadnought_rect)
 
         #logic for the buttons
+        if build_conqueror_rect.collidepoint(self.mouse):
+            build_conqueror = self.font.render("Conqueror" + " " + str(self.team1.conqueror_cost)+ "$", True, (255, 255, 255))
+            screen.blit(build_conqueror, build_conqueror_rect)
+            if self.click == True and self.team1.budget > self.team1.conqueror_cost:
+                if len(self.build_queue) < 5:
+                    self.queue_full = False
+                    self.build_queue.append("Conqueror")
+                    self.team1.budget -= self.team1.conqueror_cost
+                else:
+                    self.queue_full = True
+                self.click = False
+
         if build_frigate_rect.collidepoint(self.mouse):
             build_frigate = self.font.render("Frigate" + " " + str(self.team1.frigate_cost)+ "$", True, (255, 255, 255))
             screen.blit(build_frigate, build_frigate_rect)
@@ -156,6 +177,9 @@ class GUI():
                 
     def panel_call(self, screen):
         #for the call panel buttons
+        conqueror = self.font.render("Conqueror" + " " + str(self.conqueror_count)+"x", True, (0, 0, 0))
+        conqueror_rect = conqueror.get_rect()
+        conqueror_rect.center = (self.call_panel_rect.centerx, self.call_panel_rect.centery - 100)
 
         frigate = self.font.render("Frigate" + " " + str(self.frigate_count)+"x", True, (0, 0, 0))
         frigate_rect = frigate.get_rect()
@@ -174,12 +198,23 @@ class GUI():
         dreadnought_rect.center = (self.call_panel_rect.centerx, self.call_panel_rect.centery + 100)
 
         #blit the buttons
+        screen.blit(conqueror, conqueror_rect)
         screen.blit(frigate, frigate_rect)
         screen.blit(carrier, carrier_rect)
         screen.blit(assault, assault_rect)
         screen.blit(dreadnought, dreadnought_rect)
 
         #logic for the buttons
+        if conqueror_rect.collidepoint(self.mouse) and self.conqueror_count > 0:
+            conqueror = self.font.render("Conqueror", True, (255, 255, 255))
+            screen.blit(conqueror, conqueror_rect)
+            if self.click == True:
+                self.call_conqueror = True
+                self.call_frigate = False
+                self.call_assault = False
+                self.call_carrier = False
+                self.call_dreadnought = False
+
         if frigate_rect.collidepoint(self.mouse) and self.frigate_count > 0:
             frigate = self.font.render("Frigate", True, (255, 255, 255))
             screen.blit(frigate, frigate_rect)
@@ -188,6 +223,7 @@ class GUI():
                 self.call_assault = False
                 self.call_carrier = False
                 self.call_dreadnought = False
+                self.call_conqueror = False
 
         if assault_rect.collidepoint(self.mouse) and self.assault_count > 0:
             assault = self.font.render("Assault", True, (255, 255, 255))
@@ -197,6 +233,7 @@ class GUI():
                 self.call_carrier = False
                 self.call_dreadnought = False
                 self.call_frigate = False
+                self.call_conqueror = False
 
         
         if carrier_rect.collidepoint(self.mouse) and self.carrier_count > 0:
@@ -207,6 +244,7 @@ class GUI():
                 self.call_assault = False
                 self.call_dreadnought = False
                 self.call_frigate = False
+                self.call_conqueror = False
 
         if dreadnought_rect.collidepoint(self.mouse) and self.dreadnought_count > 0:
             dreadnought = self.font.render("Dreadnought", True, (255, 255, 255))
@@ -216,6 +254,7 @@ class GUI():
                 self.call_carrier = False
                 self.call_assault = False
                 self.call_frigate = False
+                self.call_conqueror = False
 
     def update_pos(self):
         self.slider1_rect.centerx = self.build_panel_rect.centerx - 180
@@ -272,8 +311,6 @@ class GUI():
                     self.constructing = False
                     self.dreadnought_time = 1000
 
-
-
             elif self.build_queue[0] == "Assault":
                 self.assault_time = self.assault_time - 1
                 self.construction_time = self.assault_time
@@ -301,6 +338,15 @@ class GUI():
                     self.constructing = False
                     self.frigate_time = 500
 
+            elif self.build_queue[0] == "Conqueror":
+                self.conqueror_time = self.conqueror_time - 1
+                self.construction_time = self.conqueror_time
+                if self.conqueror_time == 0:
+                    self.conqueror_count += 1
+                    self.build_queue.pop(0)
+                    self.constructing = False
+                    self.conqueror_time = 500
+
                     
     def calculate_multiplier(self):
         if self.build_queue[0] == "Assault" and self.assault_time == 1000:
@@ -315,6 +361,10 @@ class GUI():
         elif self.build_queue[0] == "Frigate" and self.frigate_time == 1000:
                 self.construction_time = self.frigate_time
                 self.multiplier = 1000 // self.construction_time
+        elif self.build_queue[0] == "Conqueror" and self.conqueror_time == 1000:
+                self.construction_time = self.conqueror_time
+                self.multiplier = 1000 // self.construction_time
+        
 
 
 

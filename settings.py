@@ -16,6 +16,7 @@ class Settings(object):
     path_assault = os.path.join(path_ships, "assault")
     path_carrier = os.path.join(path_ships, "carrier")
     path_frigate = os.path.join(path_ships, "frigate")
+    path_conqueror = os.path.join(path_ships, "conqueror")
     path_dreadnought = os.path.join(path_ships, "dreadnought")
     path_spacestation = os.path.join(path_file, "spacestations")
     path_mine = os.path.join(path_file, "mine")
