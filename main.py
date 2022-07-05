@@ -110,6 +110,7 @@ class Game(object):
         self.main_menu = True
         self.menus = Menu(self.screen)
         self.end = False
+        self.help = False
 
 
 
@@ -166,18 +167,23 @@ class Game(object):
             self.main_menu = False
         if self.menus.running == False:
             self.running = False
+        if self.menus.help == False:
+            self.help = False
 
     def run(self):
         while self.running:
             self.clock.tick(60) 
-            #print(self.clock.get_fps())    
+            print(self.clock.get_fps())    
             if self.main_menu == True:
                 self.check_windowstate()
-                self.menus.help_menu()
-            elif self.main_menu == False and self.end == False:      
+                self.menus.main()
+            elif self.main_menu == False and self.end == False and self.help == False:      
                 self.watch_for_events()
                 self.update()
                 self.draw()
+            elif self.help == True:
+                self.check_windowstate()
+                self.menus.help_menu()
             elif self.end == True and self.won == False:
                 self.check_windowstate()
                 self.menus.defeat()
@@ -207,6 +213,8 @@ class Game(object):
 
                 if event.key == pygame.K_ESCAPE:    
                     self.running = False
+                if event.key == pygame.K_F1:
+                    self.help = True
             elif event.type == pygame.QUIT:
                 self.running = False
 

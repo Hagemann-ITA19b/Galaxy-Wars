@@ -68,6 +68,7 @@ class Menu():
         self.screen = screen
         self.running = True
         self.main_menu = True
+        self.help = False
 
         self.pixelfont = pygame.font.Font(os.path.join(Settings.path_font, "ChillPixels-Matrix.otf"), 72)
 
@@ -92,7 +93,7 @@ class Menu():
 
         for i in range(6):
             bitmap = pygame.image.load(os.path.join(
-                Settings.path_help, f"help{i+1}.png"))
+                Settings.path_help, f"help{i+1}.png")).convert()
             self.images.append(bitmap)
         self.original_image = self.images[self.imageindex]
         self.rect = self.original_image.get_rect()
@@ -115,6 +116,8 @@ class Menu():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:    
                     self.running = False
+                if event.key == pygame.K_F1:
+                    self.help = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.mb = True
             else:
@@ -251,9 +254,10 @@ class Menu():
         pygame.display.flip()
 
     def help_menu(self):
+        self.help = True
         self.watch_for_events()
         self.animate()
         self.screen.blit(self.original_image,self.rect)
-
+        pygame.display.flip()
 
 
