@@ -262,33 +262,40 @@ class Game(object):
                         if ship.rotated == True and ship.move == True:
                             ship.move = False
 
+    def spawn_area(self):
+        if self.ui.call:
+            self.no_rect = pygame.draw.rect(self.screen, (255,0,0),(0,0,1920,1080))
+            for ship in self.team1:
+                ship.warp_area(self.screen)
 
     def spawn(self):
         self.mouse = pygame.mouse.get_pos()
         self.click = pygame.mouse.get_pressed()
         if self.click[2] == 1:
-            if self.ui.call_assault == True:
-                    self.ships.add(Assault("assault.png",1,self.mouse))
-                    self.ui.call_assault = False
-                    self.ui.assault_count -= 1
-            if self.ui.call_carrier == True:
-                    self.ships.add(Carrier("carrier.png",1,self.mouse))
-                    self.ui.call_carrier = False
-                    self.ui.carrier_count -= 1
-            if self.ui.call_dreadnought == True:
-                    self.ships.add(Dreadnought("dreadnought.png",1, self.mouse))
-                    self.ui.call_dreadnought = False
-                    self.ui.dreadnought_count -= 1
-            if self.ui.call_frigate == True:
-                    self.ships.add(Frigate("frigate.png",1, self.mouse))
-                    self.ui.call_frigate = False
-                    self.ui.frigate_count -= 1
-            if self.ui.call_conqueror == True:
-                    self.ships.add(Conqueror("conqueror.png",1, self.mouse))
-                    self.ui.call_conqueror = False
-                    self.ui.conqueror_count -= 1
+            for ship in self.team1:
+                if ship.spawn_rect.collidepoint(self.mouse):
+                    if self.ui.call_assault == True:
+                            self.ships.add(Assault("assault.png",1,self.mouse))
+                            self.ui.call_assault = False
+                            self.ui.assault_count -= 1
+                    if self.ui.call_carrier == True:
+                            self.ships.add(Carrier("carrier.png",1,self.mouse))
+                            self.ui.call_carrier = False
+                            self.ui.carrier_count -= 1
+                    if self.ui.call_dreadnought == True:
+                            self.ships.add(Dreadnought("dreadnought.png",1, self.mouse))
+                            self.ui.call_dreadnought = False
+                            self.ui.dreadnought_count -= 1
+                    if self.ui.call_frigate == True:
+                            self.ships.add(Frigate("frigate.png",1, self.mouse))
+                            self.ui.call_frigate = False
+                            self.ui.frigate_count -= 1
+                    if self.ui.call_conqueror == True:
+                            self.ships.add(Conqueror("conqueror.png",1, self.mouse))
+                            self.ui.call_conqueror = False
+                            self.ui.conqueror_count -= 1
 
-            self.pick_team()
+                    self.pick_team()
 
     def shoot_in_range(self):
         for ship in self.ships:
@@ -321,9 +328,10 @@ class Game(object):
         self.enemy.update()
         self.update_team()
         self.check_status()
+        self.shoot_in_range()
         self.spawn()
         self.background.update(self.offset)
-        self.shoot_in_range()
+        
         for ship in self.ships:
             ship.update(self.offset)
             if ship.stored_fighters > 0:
@@ -334,11 +342,11 @@ class Game(object):
         mouse_control(self)
         self.screen.fill((0, 0, 0))
         self.background.draw(self.screen)
-        
+        self.spawn_area()
+
         for ships in self.ships:
             ships.draw(self.screen)
 
-        
         self.select_rect()
         self.ui.draw(self.screen)
         self.cursor.draw(self.screen)

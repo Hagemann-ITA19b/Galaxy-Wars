@@ -51,6 +51,7 @@ class GUI():
         self.call_support = False
         self.call_carrier = False
         self.call_dreadnought = False
+        self.call = False
 
         #count of the units
         self.conqueror_count = 0
@@ -286,9 +287,11 @@ class GUI():
 
 
         if self.slide_2 == True:
+                self.call = True
                 if self.call_panel_rect.centerx < 200:
                     self.call_panel_rect.centerx = self.call_panel_rect.centerx + 10
         else:
+            self.call = False
             if self.call_panel_rect.centerx > -180:
                 self.call_panel_rect.centerx = self.call_panel_rect.centerx - 10
 

@@ -49,6 +49,9 @@ class Starfighter(pygame.sprite.Sprite):
 
     def range_check(self, screen):
         self.range_circle = pygame.draw.circle(screen, (255, 0, 0), self.rect.center, self.range)
+    
+    def warp_area(self, screen):
+        self.spawn_rect = pygame.draw.rect(screen, (0,255,0),(self.rect.centerx - 125,self.rect.centery - 125,250,250))
 
     def update_target(self, target, group):
             self.shoot(target.rect.center, group)
