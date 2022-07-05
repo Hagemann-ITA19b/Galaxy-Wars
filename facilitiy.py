@@ -37,10 +37,9 @@ class Mine(pygame.sprite.Sprite):
         self.images = []
         self.imageindex = 0
         self.clock_time = pygame.time.get_ticks()
-        self.animation_time = 180
-        self.images.append(self.original_image)
+        self.animation_time = 150
 
-        for i in range(23):
+        for i in range(6):
             bitmap = pygame.image.load(os.path.join(
                 Settings.path_mine, f"mine{i+1}.png"))
             scaled = pygame.transform.scale(bitmap,self.size)

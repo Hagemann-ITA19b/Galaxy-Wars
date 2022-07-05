@@ -173,7 +173,7 @@ class Game(object):
             #print(self.clock.get_fps())    
             if self.main_menu == True:
                 self.check_windowstate()
-                self.menus.main()
+                self.menus.help_menu()
             elif self.main_menu == False and self.end == False:      
                 self.watch_for_events()
                 self.update()

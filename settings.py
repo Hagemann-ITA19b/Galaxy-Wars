@@ -7,7 +7,8 @@ class Settings(object):
     window_width = 1920
     path_file = os.path.dirname(os.path.abspath(__file__))
     path_ships = os.path.join(path_file, "Ships")
-    path_ui = os.path.join(path_file, "UI")
+    path_ui = os.path.join(path_file, "ui")
+    path_help = os.path.join(path_ui, "help")
     path_ui_radar = os.path.join(path_ui, "radar")
     path_turrets = os.path.join(path_file, "Turrets")
     path_bullets = os.path.join(path_file, "Bullets")

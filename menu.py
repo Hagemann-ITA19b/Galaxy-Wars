@@ -59,6 +59,8 @@ class Menu():
         self.win_nebula = pygame.image.load(os.path.join(Settings.path_bg, "won_nebula.png")).convert_alpha()
         self.win_nebula_rect = self.win_nebula.get_rect()
         
+        #self.helpimg = pygame.image.load(os.path.join(Settings.path_help, ""))
+
 
         self.mouse = pygame.mouse.get_pos()
         self.mb = False
@@ -68,9 +70,6 @@ class Menu():
         self.main_menu = True
 
         self.pixelfont = pygame.font.Font(os.path.join(Settings.path_font, "ChillPixels-Matrix.otf"), 72)
-
-        #self.bg = pygame.image.load(os.path.join(Settings.path_ui, "main.png")).convert_alpha()
-        #self.bg_rect = self.bg.get_rect()
 
         self.star1 = Star("gasgiant", 1500, 200)
         self.galaxy = Star("galaxy", 200, 800)
@@ -83,6 +82,30 @@ class Menu():
         self.defeat_nebula_up = False
         self.win_dust_up = False
         self.win_nebula_up = False
+
+
+        #for animation
+        self.images = []
+        self.imageindex = 0
+        self.clock_time = pygame.time.get_ticks()
+        self.animation_time = 150
+
+        for i in range(6):
+            bitmap = pygame.image.load(os.path.join(
+                Settings.path_help, f"help{i+1}.png"))
+            self.images.append(bitmap)
+        self.original_image = self.images[self.imageindex]
+        self.rect = self.original_image.get_rect()
+
+
+    def animate(self):
+            if pygame.time.get_ticks() > self.clock_time:
+                self.clock_time = pygame.time.get_ticks() + self.animation_time
+                self.imageindex += 1
+                self.image = self.original_image
+                if self.imageindex >= len(self.images):
+                    self.imageindex = 0
+                self.original_image = self.images[self.imageindex]
 
 
 
@@ -210,22 +233,11 @@ class Menu():
         title_rect = title.get_rect()
         title_rect.center = (Settings.window_width / 2, (Settings.window_height / 2) - 100)
         self.screen.blit(title, title_rect)
-
-
-        # if self.start_rect.collidepoint(self.mouse):
-        #     self.start_button = pygame.image.load(os.path.join(Settings.path_ui, "start_button_hover.png")).convert_alpha()
-        #     if self.mb == True:
-        #         self.main_menu = False
-        # else:
-        #     self.start_button = pygame.image.load(os.path.join(Settings.path_ui, "start_button.png")).convert_alpha()
-
-        # self.screen.blit(self.start_button,self.start_rect)
         pygame.display.flip()
 
     def win(self):
         self.updown_win()
         self.watch_for_events()
-        #self.screen.blit(self.bg,self.bg_rect)
         self.screen.fill((0,0,0))
         self.screen.blit(self.win_stars, self.win_stars_rect)
         self.screen.blit(self.win_dust, self.win_dust_rect)
@@ -238,6 +250,10 @@ class Menu():
         self.screen.blit(title, title_rect)
         pygame.display.flip()
 
+    def help_menu(self):
+        self.watch_for_events()
+        self.animate()
+        self.screen.blit(self.original_image,self.rect)
 
 
 
