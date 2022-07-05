@@ -264,11 +264,11 @@ class Game(object):
 
     def spawn_area(self):
         if self.ui.call:
-            #credits to Gustavo Giráldez
-            s = pygame.Surface((1920,1080))  # the size of your rect
-            s.set_alpha(128)                # alpha level
-            s.fill((255,0,0))           # this fills the entire surface
-            self.screen.blit(s, (0,0))    # (0,0) are the top-left coordinates
+            #credits to Gustavo Giráldez for making rects transparent.
+            s = pygame.Surface((1920,1080))
+            s.set_alpha(128)                
+            s.fill((255,0,0))           
+            self.screen.blit(s, (0,0))    
             
             for ship in self.team1:
                 ship.warp_area(self.screen)
