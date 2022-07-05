@@ -227,6 +227,10 @@ class Game(object):
                 if self.enemy.eco.budget >= self.enemy.eco.carrier_cost:
                     self.ships.add(Carrier("carrier.png",2, pos))
                     self.enemy.eco.budget -= self.enemy.eco.carrier_cost
+            elif self.enemy.ship == 6:
+                if self.enemy.eco.budget >= self.enemy.eco.dreadnought_cost:
+                    self.ships.add(Dreadnought("Dreadnought.png",2, pos))
+                    self.enemy.eco.budget -= self.enemy.eco.dreadnought_cost
             self.pick_team()
             self.enemy.spawn == False
 
@@ -262,6 +266,10 @@ class Game(object):
                     self.ships.add(Dreadnought("dreadnought.png",1, self.mouse))
                     self.ui.call_dreadnought = False
                     self.ui.dreadnought_count -= 1
+            if self.ui.call_frigate == True:
+                    self.ships.add(Frigate("frigate.png",1, self.mouse))
+                    self.ui.call_frigate = False
+                    self.ui.frigate_count -= 1
             self.pick_team()
 
     def shoot_in_range(self):
