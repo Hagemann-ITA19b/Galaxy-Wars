@@ -6,7 +6,7 @@ from turrets import *
 from random import randint
 
 class Ship(pygame.sprite.Sprite):
-    def __init__(self, filename, team, xy):
+    def __init__(self, filename, team, dxy, xy):
         super().__init__()
         self.size = (150,150)
         self.original_image = pygame.image.load(os.path.join(Settings.path_ships, filename)).convert_alpha()
@@ -14,7 +14,7 @@ class Ship(pygame.sprite.Sprite):
         self.image = self.original_image
         self.rect = self.image.get_rect() 
         self.mouse = pygame.mouse.get_pos()
-        self.xy = xy
+        self.dxy = dxy
         self.move = False
         self.rotated = False
         self.selected = False
@@ -23,9 +23,10 @@ class Ship(pygame.sprite.Sprite):
         self.turrets = pygame.sprite.Group()
         self.team = team
         if self.team == 1:
-            self.rect.center = (-500,540)
+            self.rect.center = xy
         else:
-            self.rect.center = self.xy
+            self.rect.centerx = xy[0] + 800
+            self.rect.centery = xy[1] + 800
         self.range = 500
         self.distance_x = randint(200, self.range)
         self.distance_y = randint(-100, self.range)
@@ -53,7 +54,9 @@ class Ship(pygame.sprite.Sprite):
         self.spawn_rect = pygame.Surface((500,500))  # the size of your rect
         self.spawn_rect.set_alpha(128)                # alpha level
         self.spawn_rect.fill((0,255,0))           # this fills the entire surface
+        self.spawn_area = self.spawn_rect.get_rect(center = self.rect.center)
         self.jumped = False
+        self.jump_rotation = False
 
 
     def update_sprite(self):
@@ -111,17 +114,19 @@ class Ship(pygame.sprite.Sprite):
     def jump_in(self,dxy):
             dx = dxy[0]
             dy = dxy[1]
-            if self.rect.centerx < dx:
-                self.rect.centerx += 50
-            if self.rect.centerx > dx:
-                self.rect.centerx -= 50
-            if self.rect.centery < dy:
-                self.rect.centery += 50
-            if self.rect.centery > dy:
-                self.rect.centery -= 50
+            self.rotate(dx,dy)
+            if self.jump_rotation:
+                if self.rect.centerx < dx:
+                    self.rect.centerx += 50
+                if self.rect.centerx > dx:
+                    self.rect.centerx -= 50
+                if self.rect.centery < dy:
+                    self.rect.centery += 50
+                if self.rect.centery > dy:
+                    self.rect.centery -= 50
 
-            if self.rect.collidepoint(dxy):
-                self.jumped = True
+                if self.rect.collidepoint(dxy):
+                    self.jumped = True
 
     def mark(self, screen):
         pygame.draw.rect(screen, (255, 0, 0), self.rect, 2)
@@ -146,7 +151,7 @@ class Ship(pygame.sprite.Sprite):
 
     def update(self, offset):
         if self.jumped == False:
-            self.jump_in((self.xy[0] + offset[0],self.xy[1] - offset[1]))
+            self.jump_in((self.dxy[0] + offset[0],self.dxy[1] - offset[1]))
     
         self.rect.centerx = self.rect.centerx + offset[0]
         self.rect.centery = self.rect.centery - offset[1]
@@ -218,16 +223,20 @@ class Ship(pygame.sprite.Sprite):
 
         self.image = pygame.transform.rotate(self.original_image, int(self.current_angle))
         self.rect = self.image.get_rect(center=self.rect.center)
-
-        if self.current_angle < angle + self.rotation_speed and self.current_angle > angle - self.rotation_speed:
-            self.move = True
-            self.rotated = False
+        
+        if self.jumped:
+            if self.current_angle < angle + self.rotation_speed and self.current_angle > angle - self.rotation_speed:
+                self.move = True
+                self.rotated = False
+        else:
+            if self.current_angle < angle + self.rotation_speed and self.current_angle > angle - self.rotation_speed:
+                self.jump_rotation = True
 
 #ship types  
 
 class Carrier(Ship):
-    def __init__(self, filename, team, xy):
-        super().__init__(filename, team, xy)
+    def __init__(self, filename, team, dxy, xy):
+        super().__init__(filename, team, dxy, xy)
         self.size = (150,150)
         self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
         self.speed = 2
@@ -241,8 +250,8 @@ class Carrier(Ship):
             self.images.append(scaled)
 
 class Assault(Ship):
-    def __init__(self, filename, team, xy):
-        super().__init__(filename, team, xy)
+    def __init__(self, filename, team, dxy, xy):
+        super().__init__(filename, team, dxy, xy)
         self.size = (150,150)
         self.speed = 2
         self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
@@ -260,8 +269,8 @@ class Assault(Ship):
         self.speed += 1
 
 class Conqueror(Ship):
-    def __init__(self, filename, team, xy):
-        super().__init__(filename, team, xy)
+    def __init__(self, filename, team, dxy, xy):
+        super().__init__(filename, team,  dxy, xy)
         self.size = (150,150)
         self.speed = 1
         self.name = "conqueror"
@@ -272,8 +281,8 @@ class Conqueror(Ship):
             self.images.append(scaled)
             
 class Dreadnought(Ship):
-    def __init__(self, filename, team, xy):
-        super().__init__(filename, team, xy)
+    def __init__(self, filename, team,  dxy, xy):
+        super().__init__(filename, team,  dxy, xy)
         self.size = (500, 1000)
         self.speed = 1
         self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))
@@ -291,8 +300,8 @@ class Dreadnought(Ship):
             self.images.append(scaled)
 
 class Frigate(Ship):
-    def __init__(self, filename, team, xy):
-        super().__init__(filename, team, xy)
+    def __init__(self, filename, team,  dxy, xy):
+        super().__init__(filename, team,  dxy, xy)
         self.size = (150,150)
         self.speed = 2
         self.turrets.add(Dualies(randint(self.rect.left,self.rect.right), randint(self.rect.top, self.rect.bottom)))

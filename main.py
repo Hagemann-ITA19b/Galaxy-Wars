@@ -83,6 +83,8 @@ class Game(object):
         self.recting = pygame.Rect(self.starting_point[0], self.starting_point[1], 0, 0)
         self.team1 = pygame.sprite.Group()
         self.team2 = pygame.sprite.Group()
+        self.wheelindex = 0
+        self.spawn_locations = [(-500,540),(-500,-500),(-500,1580)]
 
         #enemy
         self.enemy = Enemy()
@@ -145,6 +147,14 @@ class Game(object):
         self.cursor.rect.center = pygame.mouse.get_pos()
         self.cursor.rect = self.cursor.image.get_rect(center = self.cursor.rect.center)
 
+    def rotate_cursor(self, dxy):
+        dx = dxy[0]
+        dy = dxy[1]
+        rel_x, rel_y = dx - self.cursor.rect.centerx, dy - self.cursor.rect.centery
+        angle = (180 / math.pi) * -math.atan2(rel_y, rel_x) -90
+
+        self.cursor.image = pygame.transform.rotate(self.cursor.image, int(angle))
+        self.cursor.rect = self.cursor.image.get_rect(center=self.cursor.rect.center)
 
     def select(self):
         if pygame.mouse.get_pressed() == (1, 0, 0):
@@ -178,7 +188,6 @@ class Game(object):
     def run(self):
         while self.running:
             self.clock.tick(60) 
-            print(self.clock.get_fps())    
             if self.main_menu == True:
                 self.check_windowstate()
                 self.menus.main()
@@ -199,6 +208,8 @@ class Game(object):
 
     def watch_for_events(self):
         for event in pygame.event.get():
+            if event.type == pygame.MOUSEWHEEL:
+                self.wheelindex -= event.y
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.ui.click = True
                 self.select()
@@ -215,7 +226,6 @@ class Game(object):
                                 ship.selected = False
                             elif ship.selected == False:
                                 ship.selected = True
-
                 if event.key == pygame.K_ESCAPE:    
                     self.running = False
                 if event.key == pygame.K_F1:
@@ -230,19 +240,19 @@ class Game(object):
         if self.enemy.spawn == True:
             if self.enemy.ship == 0:
                 if self.enemy.eco.budget >= self.enemy.eco.frigate_cost:
-                    self.ships.add(Frigate("frigate.png",2,pos))
+                    self.ships.add(Frigate("frigate.png",2,pos,pos))
                     self.enemy.eco.budget -= self.enemy.eco.frigate_cost
             elif self.enemy.ship == 1:
                 if self.enemy.eco.budget >= self.enemy.eco.assault_cost:
-                    self.ships.add(Assault("assault.png",2, pos))
+                    self.ships.add(Assault("assault.png",2, pos,pos))
                     self.enemy.eco.budget -= self.enemy.eco.assault_cost
             elif self.enemy.ship == 2:
                 if self.enemy.eco.budget >= self.enemy.eco.carrier_cost:
-                    self.ships.add(Carrier("carrier.png",2, pos))
+                    self.ships.add(Carrier("carrier.png",2, pos,pos))
                     self.enemy.eco.budget -= self.enemy.eco.carrier_cost
             elif self.enemy.ship == 6:
                 if self.enemy.eco.budget >= self.enemy.eco.dreadnought_cost:
-                    self.ships.add(Dreadnought("Dreadnought.png",2, pos))
+                    self.ships.add(Dreadnought("Dreadnought.png",2, pos,pos))
                     self.enemy.eco.budget -= self.enemy.eco.dreadnought_cost
             self.pick_team()
             self.enemy.spawn == False
@@ -252,15 +262,16 @@ class Game(object):
             for ship in self.team2:
                 if ship not in self.stations:
                     if ship not in self.mines:
-                        pos = pygame.math.Vector2(ship.rect.centerx, ship.rect.centery)
-                        enemy = min([e for e in self.team1], key=lambda e: pos.distance_to(pygame.math.Vector2(e.rect.centerx, e.rect.centery)))
-                    
-                        ship.waypoint_x = enemy.rect.centerx + ship.distance_x
-                        ship.waypoint_y = enemy.rect.centery + ship.distance_y
-                        ship.create_waypoint(self.screen)
-                        ship.rotated = True
-                        if ship.rotated == True and ship.move == True:
-                            ship.move = False
+                        if ship.jumped == True:
+                            pos = pygame.math.Vector2(ship.rect.centerx, ship.rect.centery)
+                            enemy = min([e for e in self.team1], key=lambda e: pos.distance_to(pygame.math.Vector2(e.rect.centerx, e.rect.centery)))
+                        
+                            ship.waypoint_x = enemy.rect.centerx + ship.distance_x
+                            ship.waypoint_y = enemy.rect.centery + ship.distance_y
+                            ship.create_waypoint(self.screen)
+                            ship.rotated = True
+                            if ship.rotated == True and ship.move == True:
+                                ship.move = False
 
     def spawn_area(self):
         if self.ui.call:
@@ -273,30 +284,40 @@ class Game(object):
             for ship in self.team1:
                 ship.warp_area(self.screen)
 
+    def check_angle(self):
+        if self.wheelindex >= len(self.spawn_locations):
+            self.wheelindex = 0
+        if self.wheelindex <= 0:
+            self.wheelindex = 0
+        #print(self.wheelindex)
+        self.ship_xy = self.spawn_locations[self.wheelindex]
+        
+
     def spawn(self):
+        self.check_angle()
         self.mouse = pygame.mouse.get_pos()
         self.click = pygame.mouse.get_pressed()
         if self.click[2] == 1:
             for ship in self.team1:
                 if ship.spawn_area.collidepoint(self.mouse):
                     if self.ui.call_assault == True:
-                            self.ships.add(Assault("assault.png",1,self.mouse))
+                            self.ships.add(Assault("assault.png",1,self.mouse,self.ship_xy))
                             self.ui.call_assault = False
                             self.ui.assault_count -= 1
                     if self.ui.call_carrier == True:
-                            self.ships.add(Carrier("carrier.png",1,self.mouse))
+                            self.ships.add(Carrier("carrier.png",1,self.mouse,self.ship_xy))
                             self.ui.call_carrier = False
                             self.ui.carrier_count -= 1
                     if self.ui.call_dreadnought == True:
-                            self.ships.add(Dreadnought("dreadnought.png",1, self.mouse))
+                            self.ships.add(Dreadnought("dreadnought.png",1, self.mouse,self.ship_xy))
                             self.ui.call_dreadnought = False
                             self.ui.dreadnought_count -= 1
                     if self.ui.call_frigate == True:
-                            self.ships.add(Frigate("frigate.png",1, self.mouse))
+                            self.ships.add(Frigate("frigate.png",1, self.mouse,self.ship_xy))
                             self.ui.call_frigate = False
                             self.ui.frigate_count -= 1
                     if self.ui.call_conqueror == True:
-                            self.ships.add(Conqueror("conqueror.png",1, self.mouse))
+                            self.ships.add(Conqueror("conqueror.png",1, self.mouse,self.ship_xy))
                             self.ui.call_conqueror = False
                             self.ui.conqueror_count -= 1
 
@@ -329,6 +350,7 @@ class Game(object):
         
     def update(self):
         #print(self.clock.get_fps())
+        print(self.team2)
         self.enemy_spawn()
         self.enemy.update()
         self.update_team()
