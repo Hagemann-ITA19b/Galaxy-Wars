@@ -14,7 +14,7 @@ class Ship(pygame.sprite.Sprite):
         self.image = self.original_image
         self.rect = self.image.get_rect() 
         self.mouse = pygame.mouse.get_pos()
-        self.rect.center = xy
+        self.xy = xy
         self.move = False
         self.rotated = False
         self.selected = False
@@ -22,6 +22,10 @@ class Ship(pygame.sprite.Sprite):
         self.rotation_speed = 1
         self.turrets = pygame.sprite.Group()
         self.team = team
+        if self.team == 1:
+            self.rect.center = (-500,540)
+        else:
+            self.rect.center = self.xy
         self.range = 500
         self.distance_x = randint(200, self.range)
         self.distance_y = randint(-100, self.range)
@@ -49,7 +53,7 @@ class Ship(pygame.sprite.Sprite):
         self.spawn_rect = pygame.Surface((500,500))  # the size of your rect
         self.spawn_rect.set_alpha(128)                # alpha level
         self.spawn_rect.fill((0,255,0))           # this fills the entire surface
-        
+        self.jumped = False
 
 
     def update_sprite(self):
@@ -78,7 +82,6 @@ class Ship(pygame.sprite.Sprite):
     def warp_area(self, screen):
         screen.blit(self.spawn_rect, (self.rect.centerx - 250,self.rect.centery - 250))
         self.spawn_area = self.spawn_rect.get_rect(center = self.rect.center)
-        #self.spawn_rect = pygame.draw.rect(screen, (0,255,0),(self.rect.centerx - 250,self.rect.centery - 250,500,500))
 
     def update_target(self, target, group):
             self.shoot(target.rect.center, group)
@@ -105,7 +108,20 @@ class Ship(pygame.sprite.Sprite):
                 self.target_group = None
                 self.aiming = False
 
-                
+    def jump_in(self,dxy):
+            dx = dxy[0]
+            dy = dxy[1]
+            if self.rect.centerx < dx:
+                self.rect.centerx += 50
+            if self.rect.centerx > dx:
+                self.rect.centerx -= 50
+            if self.rect.centery < dy:
+                self.rect.centery += 50
+            if self.rect.centery > dy:
+                self.rect.centery -= 50
+
+            if self.rect.collidepoint(dxy):
+                self.jumped = True
 
     def mark(self, screen):
         pygame.draw.rect(screen, (255, 0, 0), self.rect, 2)
@@ -128,18 +144,10 @@ class Ship(pygame.sprite.Sprite):
         for turret in self.turrets:
             turret.draw(screen)
 
-    def advance(self):
-        dx = self.mouse[0]- self.rect.centerx
-        dy = self.mouse[0]- self.rect.centery
-        distance = math.sqrt(dx*dy + dy*dy)
-        if distance > 15:
-            vx = dx * 5 / distance 
-            vy = dy * 5 / distance 
-            self.rect.centerx += vx
-            self.rect.centerx += vy
-
-
     def update(self, offset):
+        if self.jumped == False:
+            self.jump_in((self.xy[0] + offset[0],self.xy[1] - offset[1]))
+    
         self.rect.centerx = self.rect.centerx + offset[0]
         self.rect.centery = self.rect.centery - offset[1]
         self.waypoint_x = self.waypoint_x + offset[0]
