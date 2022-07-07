@@ -287,9 +287,8 @@ class Game(object):
     def check_angle(self):
         if self.wheelindex >= len(self.spawn_locations):
             self.wheelindex = 0
-        if self.wheelindex <= 0:
-            self.wheelindex = 0
-        #print(self.wheelindex)
+        if self.wheelindex < 0:
+            self.wheelindex = len(self.spawn_locations) - 1
         self.ship_xy = self.spawn_locations[self.wheelindex]
         
 
