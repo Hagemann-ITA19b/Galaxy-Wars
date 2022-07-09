@@ -296,6 +296,7 @@ class Game(object):
         self.check_angle()
         self.mouse = pygame.mouse.get_pos()
         self.click = pygame.mouse.get_pressed()
+        
         if self.click[2] == 1:
             for ship in self.team1:
                 if ship.spawn_area.collidepoint(self.mouse):
