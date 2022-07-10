@@ -114,8 +114,6 @@ class Game(object):
         self.end = False
         self.help = False
 
-
-
     def update_team(self):
         for mine in self.mines:
             if mine.team_changed == True:
