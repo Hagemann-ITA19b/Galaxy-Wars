@@ -1,4 +1,3 @@
-import shutil
 import pygame
 import os
 from random import randint
@@ -13,6 +12,7 @@ from logic import *
 from minimap import *
 from station import *
 from facilitiy import *
+from audio import Audio
 
 class Background():
     def __init__(self, filename) -> None:
@@ -114,6 +114,12 @@ class Game(object):
         self.end = False
         self.help = False
 
+        #audio player
+        self.player = Audio()
+
+    #def music(self):
+        
+
     def update_team(self):
         for mine in self.mines:
             if mine.team_changed == True:
@@ -189,6 +195,7 @@ class Game(object):
             if self.main_menu == True:
                 self.check_windowstate()
                 self.menus.main()
+                self.player.play_music("dark-matter-10710.mp3")
             elif self.main_menu == False and self.end == False and self.help == False:      
                 self.watch_for_events()
                 self.update()
@@ -199,9 +206,11 @@ class Game(object):
             elif self.end == True and self.won == False:
                 self.check_windowstate()
                 self.menus.defeat()
+                self.player.play_music("crushed-dreams-11536.mp3")
             elif self.end == True and self.won == True:
                 self.check_windowstate()
                 self.menus.win()
+                self.player.play_music("dead-home-9309.mp3")
         pygame.quit()       
 
     def watch_for_events(self):
