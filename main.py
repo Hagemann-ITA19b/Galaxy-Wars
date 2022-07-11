@@ -141,10 +141,8 @@ class Game(object):
                 mine.team_changed = False
 
     def update_cursor(self):
-        if self.ui.call_assault == True:
-            self.cursor.image = pygame.image.load(os.path.join(Settings.path_assault, "assault0.png")).convert_alpha()
-        elif self.ui.call_carrier == True:
-            self.cursor.image = pygame.image.load(os.path.join(Settings.path_carrier, "carrier0.png")).convert_alpha()
+        if self.ui.call == True:
+            self.cursor.image = pygame.image.load(os.path.join(Settings.path_ui, "beacon1.png")).convert_alpha()
         else:
             self.cursor.image = pygame.image.load(os.path.join(Settings.path_ui, "cursor.png")).convert_alpha()
 
