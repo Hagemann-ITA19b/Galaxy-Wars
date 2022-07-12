@@ -166,7 +166,7 @@ class Game(object):
                 else:
                     ship.selected = False
 
-    def select_rect(self):
+    def select_rect(self): 
         if pygame.mouse.get_pressed() == (1, 0, 0):
             for ship in self.ships:
                 if ship.rect.colliderect(self.recting):
