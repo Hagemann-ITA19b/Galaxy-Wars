@@ -198,6 +198,7 @@ class Game(object):
                 self.watch_for_events()
                 self.update()
                 self.draw()
+                self.player.soundtrack()
             elif self.help == True:
                 self.check_windowstate()
                 self.menus.help_menu()

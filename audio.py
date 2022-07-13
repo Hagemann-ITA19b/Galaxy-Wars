@@ -2,11 +2,15 @@ import os
 import pygame
 from pygame import mixer
 from settings import Settings
+from random import randint
 
 class Audio():
     def __init__(self) -> None:
         mixer.init()
         self.currently_playing = None
+        self.clock_time = pygame.time.get_ticks()
+        self.tracklist = ["ambient-cyberpunk-cinematic-8411.mp3","cyberpunk-109354.mp3","danger-at-the-horizon-11758.mp3","danger-beats-113879.mp3"]
+        self.intro = True
     # blaster_sound = pygame.mixer.Sound(os.path.join(Settings.path_image, "blaster.wav"))
     # blaster_sound.set_volume(0.01)
 
@@ -42,6 +46,16 @@ class Audio():
     #         pygame.mixer.Channel(1).play(Sounds.danger)
     
 
+    def soundtrack(self):
+        if self.intro == True:
+            mixer.music.fadeout(1000)
+            self.intro = False
+        if mixer.music.get_busy() == False:
+            if pygame.time.get_ticks() > self.clock_time:
+                self.clock_time = pygame.time.get_ticks() + 7200
+                index = randint(0,len(self.tracklist)-1)
+                print(index)
+                self.play_music(self.tracklist[index])
 
     def play_music(self, audio):
         if mixer.music.get_busy() == False:
