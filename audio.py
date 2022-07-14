@@ -48,13 +48,12 @@ class Audio():
 
     def soundtrack(self):
         if self.intro == True:
-            mixer.music.fadeout(1000)
+            mixer.music.fadeout(500)
             self.intro = False
         if mixer.music.get_busy() == False:
             if pygame.time.get_ticks() > self.clock_time:
                 self.clock_time = pygame.time.get_ticks() + 7200
                 index = randint(0,len(self.tracklist)-1)
-                print(index)
                 self.play_music(self.tracklist[index])
 
     def play_music(self, audio):
@@ -63,8 +62,7 @@ class Audio():
             mixer.music.set_volume(0.05)
             mixer.music.play()
             self.currently_playing = audio
-            print("!")
         elif self.currently_playing != audio:
-            mixer.music.fadeout(1000)
+            mixer.music.fadeout(100)
 
             
