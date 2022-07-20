@@ -19,6 +19,7 @@ class Background():
         super().__init__()
         self.image = pygame.image.load(os.path.join(Settings.path_bg, filename)).convert()
         self.rect = self.image.get_rect()
+        
         #animation
         self.images = []
         self.imageindex = 0
