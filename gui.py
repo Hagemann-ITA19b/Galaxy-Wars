@@ -9,7 +9,7 @@ class GUI():
     def __init__(self) -> None:
         super().__init__()
         ##ui radar image
-        self.image = pygame.image.load(os.path.join(Settings.path_ui_radar, "radar0.png")).convert()
+        self.image = pygame.image.load(os.path.join(Settings.path_ui_radar, "radar0.png")).convert_alpha()
         #for animation
         self.images = []
         self.imageindex = 0
@@ -18,7 +18,7 @@ class GUI():
         self.images.append(self.image)
         for i in range(29):
              bitmap = pygame.image.load(os.path.join(
-                 Settings.path_ui_radar, f"radar{i}.png"))
+                 Settings.path_ui_radar, f"radar{i}.png")).convert_alpha()
              self.images.append(bitmap)
 
         self.rect = pygame.Rect(0, 1080 -400, 400, 400)

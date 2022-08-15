@@ -41,7 +41,7 @@ class Mine(pygame.sprite.Sprite):
 
         for i in range(6):
             bitmap = pygame.image.load(os.path.join(
-                Settings.path_mine, f"mine{i+1}.png"))
+                Settings.path_mine, f"mine{i+1}.png")).convert_alpha()
             scaled = pygame.transform.scale(bitmap,self.size)
             self.images.append(scaled)
 

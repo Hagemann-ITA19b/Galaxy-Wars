@@ -36,7 +36,7 @@ class Spacestation(pygame.sprite.Sprite):
 
         for i in range(20):
             bitmap = pygame.image.load(os.path.join(
-                Settings.path_spacestation, f"spacestation{i}.png"))
+                Settings.path_spacestation, f"spacestation{i}.png")).convert_alpha()
             scaled = pygame.transform.scale(bitmap,self.size)
             self.images.append(scaled)
 
