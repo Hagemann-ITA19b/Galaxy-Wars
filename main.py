@@ -268,7 +268,7 @@ class Game(object):
                     if ship not in self.mines:
                         if ship.jumped == True:
                             pos = pygame.math.Vector2(ship.rect.centerx, ship.rect.centery)
-                            enemy = min([e for e in self.team1], key=lambda e: pos.distance_to(pygame.math.Vector2(e.rect.centerx, e.rect.centery)))
+                            enemy = min([e for e in self.team1], key=lambda e: pos.distance_to(pygame.math.Vector2(e.rect.centerx, e.rect.centery))) #credits to Rabbid76
                         
                             ship.waypoint_x = enemy.rect.centerx + ship.distance_x
                             ship.waypoint_y = enemy.rect.centery + ship.distance_y

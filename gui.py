@@ -9,7 +9,7 @@ class GUI():
     def __init__(self) -> None:
         super().__init__()
         ##ui radar image
-        self.image = pygame.image.load(os.path.join(Settings.path_ui_radar, "radar0.png"))
+        self.image = pygame.image.load(os.path.join(Settings.path_ui_radar, "radar0.png")).convert()
         #for animation
         self.images = []
         self.imageindex = 0
