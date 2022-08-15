@@ -59,7 +59,7 @@ class Audio():
     def play_music(self, audio):
         if mixer.music.get_busy() == False:
             mixer.music.load(os.path.join(Settings.path_soundtrack, audio))
-            mixer.music.set_volume(0.05)
+            mixer.music.set_volume(0.03)
             mixer.music.play()
             self.currently_playing = audio
         elif self.currently_playing != audio:
